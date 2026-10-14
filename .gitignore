@@ -41,3 +41,6 @@ compile_commands.json
 *.wav
 *.aiff
 *.caf
+
+# Material privado de pruebas (mezclas, capturas de sesiones del usuario)
+evidencias/
