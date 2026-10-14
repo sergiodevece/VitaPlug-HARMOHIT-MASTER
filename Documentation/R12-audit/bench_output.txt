@@ -1,0 +1,2 @@
+STEREO: R1 0.846 s, R1.2 1.697 s per 60 s audio (ratio 2.01; realtime load R1.2 2.83 %)
+M/S: R1 0.843 s, R1.2 1.679 s per 60 s audio (ratio 1.99; realtime load R1.2 2.80 %)

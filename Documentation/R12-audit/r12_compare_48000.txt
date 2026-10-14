@@ -1,0 +1,279 @@
+# processing sample rate 48000 Hz
+# R1.2 comparison. DRIVE shown as knob 0..10. resid = vs same processor at DRIVE 0; LM = after least-squares level match.
+# Logic material (5 bars rebuilt from bounce): RMS -21.07 dBFS, peak -3.07, crest 18.00
+
+## L0 R1 model vs Logic bounce. Bar residual vs bar with same source at lower DRIVE.
+R1    bar resid vs DRIVE0 (LM resid, level dB):  b1 -330.4 (-330.4, -0.00)  b2 -44.3 (-48.4, -0.04)  b3 -32.7 (-37.1, -0.16)  b4 -17.7 (-22.7, -1.00)  b5 -9.1 (-12.9, -2.75)
+R1.2  bar resid vs DRIVE0 (LM resid, level dB):  b1 -330.4 (-330.4, -0.00)  b2 -32.2 (-35.0, -0.15)  b3 -25.1 (-27.6, -0.32)  b4 -16.0 (-18.6, -0.97)  b5 -11.9 (-14.1, -1.57)
+Logic bounce measured: bar3 vs bar1 (DRIVE50 vs 0) -32.1 dB (LM -36.6, -0.18 dB); bar5 vs bar1 (100 vs 0) -8.9 dB (LM -12.7, -2.85 dB)
+
+## M1 Logic 5-bar music, programme RMS levels. Columns: outRMS peak crest dCrest resid LMresid LMgain top0.1%peakDelta
+MIX   RMS -24 D 3.0  -20.86   -4.21  16.65  -1.51    -6.7   -20.1  +3.24    1.89
+MIX   RMS -24 D 5.0  -16.08   -2.25  13.83  -4.33     3.9   -11.4  +8.30    3.92
+MIX   RMS -24 D 7.0  -10.47    1.99  12.45  -5.71    11.8    -7.1 +14.53    6.24
+MIX   RMS -24 D10.0   -2.41    9.19  11.61  -6.55    21.1    -4.2 +23.74   10.23
+R1    RMS -24 D 3.0  -24.08   -5.98  18.11  -0.05   -48.1   -52.1  -0.03   -0.07
+R1    RMS -24 D 5.0  -24.17   -6.20  17.96  -0.20   -36.0   -40.2  -0.11   -0.28
+R1    RMS -24 D 7.0  -24.46   -6.93  17.53  -0.63   -25.0   -29.5  -0.40   -0.95
+R1    RMS -24 D10.0  -26.37  -11.60  14.77  -3.39   -10.9   -14.7  -2.16   -5.31
+R1.2  RMS -24 D 3.0  -24.20   -6.31  17.90  -0.26   -32.4   -35.3  -0.15   -0.35
+R1.2  RMS -24 D 5.0  -24.41   -6.82  17.60  -0.56   -24.8   -27.6  -0.35   -0.82
+R1.2  RMS -24 D 7.0  -24.80   -7.57  17.23  -0.93   -18.7   -21.4  -0.72   -1.74
+R1.2  RMS -24 D10.0  -25.94   -9.74  16.20  -1.96   -11.6   -14.1  -1.71   -4.47
+MIX   RMS -18 D 3.0  -15.94    0.12  16.07  -2.09    -9.9   -16.8  +2.21    0.25
+MIX   RMS -18 D 5.0  -12.54    0.23  12.77  -5.39     0.2    -8.8  +6.13    0.56
+MIX   RMS -18 D 7.0   -8.01    3.46  11.47  -6.69     7.7    -5.0 +11.69    1.05
+MIX   RMS -18 D10.0   -0.78    9.76  10.54  -7.62    16.5    -2.6 +20.68    2.19
+R1    RMS -18 D 3.0  -18.14   -0.09  18.05  -0.11   -38.8   -43.6  -0.08   -0.19
+R1    RMS -18 D 5.0  -18.35   -0.52  17.83  -0.33   -28.2   -33.5  -0.29   -0.60
+R1    RMS -18 D 7.0  -18.95   -1.59  17.36  -0.80   -19.0   -24.9  -0.88   -1.65
+R1    RMS -18 D10.0  -22.28   -7.89  14.39  -3.77    -7.2   -11.7  -3.92   -7.68
+R1.2  RMS -18 D 3.0  -18.20   -0.31  17.90  -0.26   -32.4   -35.3  -0.15   -0.35
+R1.2  RMS -18 D 5.0  -18.41   -0.82  17.60  -0.56   -24.8   -27.6  -0.35   -0.82
+R1.2  RMS -18 D 7.0  -18.80   -1.57  17.23  -0.93   -18.7   -21.4  -0.72   -1.74
+R1.2  RMS -18 D10.0  -19.94   -3.74  16.20  -1.96   -11.6   -14.1  -1.71   -4.47
+MIX   RMS -12 D 3.0  -11.22    5.09  16.31  -1.85   -13.9   -15.6  +0.96   -0.87
+MIX   RMS -12 D 5.0   -9.33    3.94  13.26  -4.90    -4.3    -7.9  +3.50   -1.86
+MIX   RMS -12 D 7.0   -6.00    4.56  10.57  -7.59     2.9    -3.9  +8.35   -3.64
+MIX   RMS -12 D10.0    0.45   10.20   9.76  -8.40    11.5    -1.5 +17.81  -10.70
+R1    RMS -12 D 3.0  -12.24    5.79  18.03  -0.13   -32.6   -39.0  -0.18   -0.32
+R1    RMS -12 D 5.0  -12.61    5.26  17.86  -0.30   -23.4   -30.9  -0.55   -0.86
+R1    RMS -12 D 7.0  -13.53    4.02  17.55  -0.61   -15.5   -23.8  -1.46   -2.09
+R1    RMS -12 D10.0  -18.35   -3.28  15.07  -3.09    -5.2   -11.1  -5.94   -9.20
+R1.2  RMS -12 D 3.0  -12.20    5.69  17.90  -0.26   -32.4   -35.3  -0.15   -0.35
+R1.2  RMS -12 D 5.0  -12.41    5.18  17.60  -0.56   -24.8   -27.6  -0.35   -0.82
+R1.2  RMS -12 D 7.0  -12.80    4.43  17.23  -0.93   -18.7   -21.4  -0.72   -1.74
+R1.2  RMS -12 D10.0  -13.94    2.26  16.20  -1.96   -11.6   -14.1  -1.71   -4.47
+MIX   RMS  -6 D 3.0   -6.36   10.50  16.86  -1.30   -16.4   -16.5  -0.20   -1.51
+MIX   RMS  -6 D 5.0   -5.97    8.48  14.45  -3.71    -8.1    -8.3  +0.79   -3.42
+MIX   RMS  -6 D 7.0   -4.17    5.50   9.67  -8.49    -1.4    -3.3  +4.62   -7.56
+MIX   RMS  -6 D10.0    1.35   10.04   8.70  -9.46     6.8    -0.6 +16.22  -13.46
+R1    RMS  -6 D 3.0   -6.35   11.72  18.07  -0.09   -28.9   -37.8  -0.30   -0.40
+R1    RMS  -6 D 5.0   -6.86   11.14  18.00  -0.16   -20.6   -30.9  -0.80   -1.00
+R1    RMS  -6 D 7.0   -8.03    9.82  17.85  -0.31   -13.6   -24.9  -1.96   -2.33
+R1    RMS  -6 D10.0  -14.15    1.93  16.07  -2.09    -4.1   -12.1  -7.82  -10.08
+R1.2  RMS  -6 D 3.0   -6.20   11.69  17.90  -0.26   -32.4   -35.3  -0.15   -0.35
+R1.2  RMS  -6 D 5.0   -6.41   11.18  17.60  -0.56   -24.8   -27.6  -0.35   -0.82
+R1.2  RMS  -6 D 7.0   -6.80   10.43  17.23  -0.93   -18.7   -21.4  -0.72   -1.74
+R1.2  RMS  -6 D10.0   -7.94    8.26  16.20  -1.96   -11.6   -14.1  -1.71   -4.47
+
+## M1 A/B-loop music, programme RMS levels. Columns: outRMS peak crest dCrest resid LMresid LMgain top0.1%peakDelta
+MIX   RMS -24 D 3.0  -20.56   -5.99  14.57  -0.85    -5.8   -21.9  +3.56    2.81
+MIX   RMS -24 D 5.0  -15.31   -2.30  13.01  -2.41     5.0   -13.9  +8.96    6.12
+MIX   RMS -24 D 7.0   -9.53    2.30  11.83  -3.59    12.9    -9.2 +15.12    9.41
+MIX   RMS -24 D10.0   -1.58    9.13  10.71  -4.71    22.0    -5.5 +23.95   14.28
+R1    RMS -24 D 3.0  -24.11   -8.72  15.39  -0.03   -52.7   -57.7  -0.02   -0.04
+R1    RMS -24 D 5.0  -24.16   -8.85  15.31  -0.11   -40.4   -45.5  -0.07   -0.17
+R1    RMS -24 D 7.0  -24.36   -9.33  15.03  -0.39   -29.0   -34.3  -0.26   -0.62
+R1    RMS -24 D10.0  -25.75  -12.52  13.23  -2.19   -13.8   -18.6  -1.59   -3.72
+R1.2  RMS -24 D 3.0  -24.19   -9.03  15.15  -0.27   -36.6   -39.7  -0.09   -0.20
+R1.2  RMS -24 D 5.0  -24.33   -9.58  14.75  -0.67   -28.6   -31.6  -0.23   -0.50
+R1.2  RMS -24 D 7.0  -24.60  -10.48  14.12  -1.30   -22.1   -25.0  -0.49   -1.09
+R1.2  RMS -24 D10.0  -25.50  -11.85  13.64  -1.78   -14.1   -17.1  -1.32   -3.07
+MIX   RMS -18 D 3.0  -15.50   -1.68  13.83  -1.60    -8.6   -19.1  +2.64    1.16
+MIX   RMS -18 D 5.0  -11.77    0.54  12.31  -3.11     1.2   -10.7  +6.71    2.41
+MIX   RMS -18 D 7.0   -7.20    3.60  10.79  -4.63     8.5    -6.4 +12.03    4.01
+MIX   RMS -18 D10.0   -0.08    9.82   9.90  -5.52    17.2    -3.5 +20.57    7.06
+R1    RMS -18 D 3.0  -18.15   -2.81  15.35  -0.08   -42.2   -47.7  -0.06   -0.13
+R1    RMS -18 D 5.0  -18.31   -3.14  15.18  -0.24   -30.9   -36.8  -0.22   -0.46
+R1    RMS -18 D 7.0  -18.81   -4.05  14.76  -0.66   -21.0   -27.3  -0.71   -1.37
+R1    RMS -18 D10.0  -21.64   -8.87  12.77  -2.65    -8.5   -13.8  -3.36   -6.44
+R1.2  RMS -18 D 3.0  -18.19   -3.03  15.15  -0.27   -36.6   -39.7  -0.09   -0.20
+R1.2  RMS -18 D 5.0  -18.33   -3.58  14.75  -0.67   -28.6   -31.6  -0.23   -0.50
+R1.2  RMS -18 D 7.0  -18.60   -4.48  14.12  -1.30   -22.1   -25.0  -0.49   -1.09
+R1.2  RMS -18 D10.0  -19.50   -5.85  13.64  -1.78   -14.1   -17.1  -1.32   -3.07
+MIX   RMS -12 D 3.0  -10.85    2.93  13.79  -1.64   -13.3   -17.0  +1.33   -0.31
+MIX   RMS -12 D 5.0   -8.70    3.36  12.06  -3.36    -3.8    -9.0  +3.98   -0.60
+MIX   RMS -12 D 7.0   -5.31    4.57   9.88  -5.54     3.4    -4.8  +8.55   -1.06
+MIX   RMS -12 D10.0    1.03   10.21   9.18  -6.24    12.0    -2.1 +17.27   -2.28
+R1    RMS -12 D 3.0  -12.25    3.05  15.30  -0.12   -34.0   -40.7  -0.16   -0.29
+R1    RMS -12 D 5.0  -12.59    2.54  15.13  -0.29   -24.3   -31.9  -0.50   -0.81
+R1    RMS -12 D 7.0  -13.47    1.34  14.81  -0.61   -16.1   -24.4  -1.36   -2.02
+R1    RMS -12 D10.0  -17.86   -4.91  12.95  -2.47    -5.7   -12.2  -5.50   -8.44
+R1.2  RMS -12 D 3.0  -12.19    2.97  15.15  -0.27   -36.6   -39.7  -0.09   -0.20
+R1.2  RMS -12 D 5.0  -12.33    2.42  14.75  -0.67   -28.6   -31.6  -0.23   -0.50
+R1.2  RMS -12 D 7.0  -12.60    1.52  14.12  -1.30   -22.1   -25.0  -0.49   -1.09
+R1.2  RMS -12 D10.0  -13.50    0.15  13.64  -1.78   -14.1   -17.1  -1.32   -3.07
+MIX   RMS  -6 D 3.0   -6.12    7.96  14.08  -1.34   -17.2   -17.2  +0.06   -1.21
+MIX   RMS  -6 D 5.0   -5.48    6.71  12.19  -3.23    -8.3    -8.9  +1.21   -2.66
+MIX   RMS  -6 D 7.0   -3.57    5.73   9.30  -6.12    -1.4    -3.9  +4.77   -5.53
+MIX   RMS  -6 D10.0    1.71    9.93   8.22  -7.20     6.8    -1.0 +14.63  -25.29
+R1    RMS  -6 D 3.0   -6.39    8.93  15.33  -0.09   -28.8   -37.6  -0.30   -0.41
+R1    RMS  -6 D 5.0   -6.91    8.33  15.24  -0.18   -20.5   -30.4  -0.81   -1.04
+R1    RMS  -6 D 7.0   -8.08    7.00  15.09  -0.34   -13.5   -24.4  -1.97   -2.39
+R1    RMS  -6 D10.0  -13.82   -0.35  13.47  -1.95    -4.3   -12.7  -7.48   -9.64
+R1.2  RMS  -6 D 3.0   -6.19    8.97  15.15  -0.27   -36.6   -39.7  -0.09   -0.20
+R1.2  RMS  -6 D 5.0   -6.33    8.42  14.75  -0.67   -28.6   -31.6  -0.23   -0.50
+R1.2  RMS  -6 D 7.0   -6.60    7.52  14.12  -1.30   -22.1   -25.0  -0.49   -1.09
+R1.2  RMS  -6 D10.0   -7.50    6.15  13.64  -1.78   -14.1   -17.1  -1.32   -3.07
+
+## T1 sine 999.8 Hz (peak level). THD and H2..H5 dBc
+MIX   pk -24 D 3.0 THD   0.2401%  H2 -370.5 H3  -52.4 H4 -370.5 H5  -97.6  outPeak -19.85
+MIX   pk -24 D 5.0 THD   1.1811%  H2 -377.2 H3  -38.6 H4 -377.2 H5  -74.0  outPeak -13.21
+MIX   pk -24 D 7.0 THD   3.5500%  H2 -384.8 H3  -29.0 H4 -384.8 H5  -56.1  outPeak  -5.76
+MIX   pk -24 D10.0 THD  11.3266%  H2 -394.7 H3  -19.0 H4 -394.7 H5  -36.1  outPeak   3.51
+MIX   pk -12 D 3.0 THD   2.9098%  H2 -229.3 H3  -30.7 H4 -234.0 H5  -53.2  outPeak  -8.83
+MIX   pk -12 D 5.0 THD  10.9964%  H2 -231.7 H3  -19.3 H4 -228.3 H5  -34.2  outPeak  -4.89
+MIX   pk -12 D 7.0 THD  22.6935%  H2 -237.7 H3  -13.4 H4 -235.7 H5  -23.2  outPeak  -1.19
+MIX   pk -12 D10.0 THD  37.9590%  H2 -218.7 H3   -9.7 H4 -216.3 H5  -15.9  outPeak   4.40
+MIX   pk  -6 D 3.0 THD   6.3650%  H2 -242.9 H3  -24.1 H4 -242.9 H5  -37.6  outPeak  -4.37
+MIX   pk  -6 D 5.0 THD  18.3388%  H2 -246.2 H3  -15.4 H4 -241.5 H5  -24.0  outPeak  -2.69
+MIX   pk  -6 D 7.0 THD  32.2411%  H2 -391.4 H3  -11.1 H4 -391.4 H5  -17.3  outPeak  -0.73
+MIX   pk  -6 D10.0 THD  49.6428%  H2 -225.7 H3   -8.2 H4 -226.1 H5  -13.1  outPeak   4.77
+R1    pk -24 D 3.0 THD   0.0077%  H2 -366.3 H3  -82.3 H4 -366.3 H5 -132.4  outPeak -24.00
+R1    pk -24 D 5.0 THD   0.0319%  H2 -366.3 H3  -69.9 H4 -366.3 H5 -119.4  outPeak -24.01
+R1    pk -24 D 7.0 THD   0.1220%  H2 -366.3 H3  -58.3 H4 -366.3 H5 -104.3  outPeak -24.04
+R1    pk -24 D10.0 THD   0.8222%  H2 -366.1 H3  -41.7 H4 -366.1 H5  -78.8  outPeak -24.29
+R1    pk -12 D 3.0 THD   0.1134%  H2 -222.9 H3  -58.9 H4 -227.1 H5  -94.2  outPeak -12.04
+R1    pk -12 D 5.0 THD   0.4398%  H2 -251.0 H3  -47.1 H4 -241.9 H5  -76.9  outPeak -12.16
+R1    pk -12 D 7.0 THD   1.4998%  H2 -246.5 H3  -36.5 H4 -246.8 H5  -60.4  outPeak -12.55
+R1    pk -12 D10.0 THD   7.8027%  H2 -235.4 H3  -22.3 H4 -233.5 H5  -38.3  outPeak -14.94
+R1    pk  -6 D 3.0 THD   0.3644%  H2 -240.0 H3  -48.8 H4 -227.1 H5  -73.1  outPeak  -6.13
+R1    pk  -6 D 5.0 THD   1.2161%  H2 -258.5 H3  -38.4 H4 -258.5 H5  -57.7  outPeak  -6.47
+R1    pk  -6 D 7.0 THD   3.3290%  H2 -257.8 H3  -29.7 H4 -257.8 H5  -44.3  outPeak  -7.38
+R1    pk  -6 D10.0 THD  12.7583%  H2 -245.0 H3  -18.4 H4 -239.8 H5  -27.7  outPeak -11.71
+R1.2  pk -24 D 3.0 THD   0.3144%  H2  -51.1 H3  -56.6 H4  -95.5 H5 -105.3  outPeak -24.03
+R1.2  pk -24 D 5.0 THD   0.9108%  H2  -41.6 H3  -48.5 H4  -80.0 H5  -91.3  outPeak -24.06
+R1.2  pk -24 D 7.0 THD   2.0732%  H2  -34.5 H3  -41.2 H4  -67.0 H5  -78.2  outPeak -24.15
+R1.2  pk -24 D10.0 THD   5.6108%  H2  -26.2 H3  -31.2 H4  -50.2 H5  -59.6  outPeak -24.57
+R1.2  pk -12 D 3.0 THD   0.3144%  H2  -51.1 H3  -56.6 H4  -95.5 H5 -105.3  outPeak -12.03
+R1.2  pk -12 D 5.0 THD   0.9108%  H2  -41.6 H3  -48.5 H4  -80.0 H5  -91.3  outPeak -12.06
+R1.2  pk -12 D 7.0 THD   2.0732%  H2  -34.5 H3  -41.2 H4  -67.0 H5  -78.2  outPeak -12.15
+R1.2  pk -12 D10.0 THD   5.6108%  H2  -26.2 H3  -31.2 H4  -50.2 H5  -59.6  outPeak -12.57
+R1.2  pk  -6 D 3.0 THD   0.3144%  H2  -51.1 H3  -56.6 H4  -95.5 H5 -105.3  outPeak  -6.03
+R1.2  pk  -6 D 5.0 THD   0.9108%  H2  -41.6 H3  -48.5 H4  -80.0 H5  -91.3  outPeak  -6.06
+R1.2  pk  -6 D 7.0 THD   2.0732%  H2  -34.5 H3  -41.2 H4  -67.0 H5  -78.2  outPeak  -6.15
+R1.2  pk  -6 D10.0 THD   5.6108%  H2  -26.2 H3  -31.2 H4  -50.2 H5  -59.6  outPeak  -6.57
+
+## O onset scenarios: attack = peak in first 5 ms vs DRIVE 0 of same processor; body = 20-200 ms energy delta
+scenario                                   proc    D 3 att/body   D 5 att/body   D 7 att/body   D10 att/body
+impulse -6 after 2 s silence               MIX     +2.88/+244.66   +6.49/+253.75  +10.19/+260.25  +15.30/+267.87
+impulse -6 after 2 s silence               R1      -0.02/+0.00   -0.09/+0.00   -0.42/+0.00   -3.42/+0.00
+impulse -6 after 2 s silence               R1.2    -0.36/+225.56   -0.73/+233.39   -1.35/+238.40   -2.81/+243.21
+impulse -20 after 2 s silence              MIX     +4.15/+234.70  +10.81/+246.78  +18.33/+256.10  +27.96/+266.41
+impulse -20 after 2 s silence              R1      -0.00/+0.00   -0.00/+0.00   -0.02/+0.00   -0.27/+0.00
+impulse -20 after 2 s silence              R1.2    -0.37/+210.92   -0.74/+218.72   -1.36/+223.73   -2.83/+228.61
+kick -6 after silence                      MIX     +1.37/+3.03   +2.64/+7.16   +5.07/+11.56  +11.04/+17.61
+kick -6 after silence                      R1      -0.05/-0.04   -0.22/-0.17   -0.87/-0.57   -5.96/-2.83
+kick -6 after silence                      R1.2    -0.38/-0.07   -0.77/-0.16   -1.42/-0.37   -2.97/-1.09
+snare -6 (0.3 ms rise) after silence       MIX     +2.36/+3.58   +5.02/+8.87   +7.76/+14.75  +14.17/+22.76
+snare -6 (0.3 ms rise) after silence       R1      -0.03/-0.02   -0.14/-0.08   -0.58/-0.30   -4.42/-1.72
+snare -6 (0.3 ms rise) after silence       R1.2    -0.17/-0.10   -0.33/-0.24   -0.62/-0.51   -1.38/-1.35
+kick -6 after 1 s pause in music(-18 RMS)  MIX     +1.45/+3.03   +2.88/+7.18   +5.56/+11.60  +11.73/+17.66
+kick -6 after 1 s pause in music(-18 RMS)  R1      -0.05/-0.04   -0.22/-0.17   -0.84/-0.56   -5.77/-2.82
+kick -6 after 1 s pause in music(-18 RMS)  R1.2    -0.39/-0.06   -0.80/-0.16   -1.47/-0.36   -2.99/-1.06
+kick -6 after 250 ms pause in music        MIX     +1.47/+2.99   +3.06/+7.06   +5.82/+11.41  +11.68/+17.42
+kick -6 after 250 ms pause in music        R1      -0.05/-0.05   -0.21/-0.17   -0.84/-0.59   -5.72/-2.91
+kick -6 after 250 ms pause in music        R1.2    -0.29/-0.05   -0.66/-0.13   -1.42/-0.30   -3.89/-0.91
+snare -6 after quiet music (-42 RMS)       MIX     +2.37/+3.61   +5.51/+8.95   +9.00/+14.88  +14.18/+22.89
+snare -6 after quiet music (-42 RMS)       R1      -0.05/-0.02   -0.21/-0.08   -0.62/-0.28   -3.99/-1.65
+snare -6 after quiet music (-42 RMS)       R1.2    -0.19/-0.10   -0.30/-0.24   -0.49/-0.51   -1.01/-1.33
+level step music -36 -> -14 RMS            MIX     +0.10/+0.97   +0.41/+2.93   +1.61/+6.13   +7.64/+12.22
+level step music -36 -> -14 RMS            R1      -0.11/-0.19   -0.40/-0.57   -1.30/-1.49   -7.60/-5.99
+level step music -36 -> -14 RMS            R1.2    -0.39/-0.13   -0.80/-0.31   -1.47/-0.67   -3.06/-1.78
+dense drum loop -6 (hit at 4.25 s)         MIX     +1.32/+3.02   +2.61/+7.14   +5.25/+11.54  +12.16/+17.58
+dense drum loop -6 (hit at 4.25 s)         R1      -0.05/-0.04   -0.23/-0.17   -0.89/-0.57   -5.92/-2.85
+dense drum loop -6 (hit at 4.25 s)         R1.2    -0.49/-0.06   -1.11/-0.14   -2.26/-0.32   -5.43/-0.97
+absolute residual (dBFS RMS) 5-200 ms after impulse -6, DRIVE 5/10 (even-term HP tail):  D 5 -100.3  D10 -90.5
+
+## N decaying tail (noise, -12 dBFS start, -27 dB/s). Per window: input dBFS | R1.2 D10: outRMS-inRMS dB, residual dBFS | R1 D10 residual dBFS
+  t=0.6s in   -22.0 | out-in  -0.82 dB  resid   -40.6 dBFS | R1 resid   -39.7 dBFS
+  t=1.0s in   -32.8 | out-in  -0.15 dB  resid   -62.0 dBFS | R1 resid   -68.9 dBFS
+  t=1.4s in   -43.6 | out-in  -0.04 dB  resid   -80.1 dBFS | R1 resid  -100.8 dBFS
+  t=1.8s in   -54.4 | out-in  -0.01 dB  resid   -98.0 dBFS | R1 resid  -133.4 dBFS
+  t=2.2s in   -65.3 | out-in  -0.00 dB  resid  -115.3 dBFS | R1 resid  -166.0 dBFS
+  t=2.6s in   -76.0 | out-in  +0.00 dB  resid  -132.3 dBFS | R1 resid  -197.7 dBFS
+  t=3.0s in   -86.8 | out-in  -0.00 dB  resid  -149.8 dBFS | R1 resid  -225.8 dBFS
+
+## P pumping check on 'level step' and Logic music, R1.2: 20 ms output/DRIVE0 level ratio statistics (dB)
+  level step   D 5  20ms ratio p1  -0.67  median  -0.00  p99  +0.09  max  +0.09
+  level step   D10  20ms ratio p1  -3.57  median  -0.03  p99  +0.38  max  +0.38
+  Logic music  D 5  20ms ratio p1  -0.74  median  -0.00  p99  +0.04  max  +0.09
+  Logic music  D10  20ms ratio p1  -3.69  median  -0.03  p99  +0.18  max  +0.45
+
+## A alias+noise (non-harmonic bins) dBc, tones at -6 dBFS peak, DRIVE 10 (and 5)
+MIX     7000 Hz D 5  nonharm  -102.2 dBc  THD 17.000%
+MIX     7000 Hz D10  nonharm   -37.4 dBc  THD 39.054%
+MIX    11000 Hz D 5  nonharm   -71.2 dBc  THD 0.000%
+MIX    11000 Hz D10  nonharm   -28.2 dBc  THD 0.000%
+MIX    14000 Hz D 5  nonharm   -55.3 dBc  THD 0.000%
+MIX    14000 Hz D10  nonharm   -23.2 dBc  THD 0.000%
+R1      7000 Hz D 5  nonharm  -122.9 dBc  THD 1.209%
+R1      7000 Hz D10  nonharm  -111.8 dBc  THD 11.969%
+R1     11000 Hz D 5  nonharm  -118.5 dBc  THD 0.000%
+R1     11000 Hz D10  nonharm   -79.5 dBc  THD 0.000%
+R1     14000 Hz D 5  nonharm  -110.9 dBc  THD 0.000%
+R1     14000 Hz D10  nonharm   -62.1 dBc  THD 0.000%
+R1.2    7000 Hz D 5  nonharm  -116.6 dBc  THD 0.911%
+R1.2    7000 Hz D10  nonharm  -100.1 dBc  THD 5.601%
+R1.2   11000 Hz D 5  nonharm  -117.0 dBc  THD 0.829%
+R1.2   11000 Hz D10  nonharm  -100.4 dBc  THD 4.871%
+R1.2   14000 Hz D 5  nonharm  -116.1 dBc  THD 0.000%
+R1.2   14000 Hz D10  nonharm   -99.6 dBc  THD 0.000%
+A2 music HF: residual energy above 18 kHz vs DRIVE0, 5-bar Logic material at native level (dB re full-band DRIVE0)
+  MIX   D 5  -17.2 dB
+  MIX   D10  1.3 dB
+  R1    D 5  -53.9 dB
+  R1    D10  -31.3 dB
+  R1.2  D 5  -46.3 dB
+  R1.2  D10  -33.3 dB
+
+## S Mid/Side. Real mix (Logic source A) and synthetic independent M/S, plus very low Side.
+ real mix
+   Mid -17.9 dBFS RMS, Side -38.5 dBFS RMS
+   R1    drive on MID  D 3  Mid resid   -39.6  Side resid  -130.2
+   R1    drive on MID  D 5  Mid resid   -28.8  Side resid  -130.0
+   R1    drive on MID  D10  Mid resid    -7.4  Side resid  -128.5
+   R1    drive on SIDE D 3  Mid resid  -150.9  Side resid   -76.1
+   R1    drive on SIDE D 5  Mid resid  -149.3  Side resid   -63.1
+   R1    drive on SIDE D10  Mid resid  -148.6  Side resid   -32.6
+   R1.2  drive on MID  D 3  Mid resid   -32.1  Side resid  -130.2
+   R1.2  drive on MID  D 5  Mid resid   -24.6  Side resid  -130.4
+   R1.2  drive on MID  D10  Mid resid   -11.5  Side resid  -129.1
+   R1.2  drive on SIDE D 3  Mid resid  -147.9  Side resid   -32.8
+   R1.2  drive on SIDE D 5  Mid resid  -148.2  Side resid   -25.4
+   R1.2  drive on SIDE D10  Mid resid  -148.1  Side resid   -12.4
+ independent (Mid sine, Side drums)
+   Mid -15.0 dBFS RMS, Side -35.7 dBFS RMS
+   R1    drive on MID  D 3  Mid resid   -48.7  Side resid  -130.2
+   R1    drive on MID  D 5  Mid resid   -36.8  Side resid  -130.2
+   R1    drive on MID  D10  Mid resid   -12.3  Side resid  -130.8
+   R1    drive on SIDE D 3  Mid resid  -149.2  Side resid   -77.8
+   R1    drive on SIDE D 5  Mid resid  -148.9  Side resid   -65.0
+   R1    drive on SIDE D10  Mid resid  -148.4  Side resid   -34.5
+   R1.2  drive on MID  D 3  Mid resid   -45.3  Side resid  -130.2
+   R1.2  drive on MID  D 5  Mid resid   -36.8  Side resid  -130.1
+   R1.2  drive on MID  D10  Mid resid   -20.3  Side resid  -130.3
+   R1.2  drive on SIDE D 3  Mid resid  -147.7  Side resid   -36.6
+   R1.2  drive on SIDE D 5  Mid resid  -147.6  Side resid   -28.9
+   R1.2  drive on SIDE D10  Mid resid  -147.5  Side resid   -14.7
+ real mix, Side -30 dB (very low)
+   Mid -17.9 dBFS RMS, Side -68.9 dBFS RMS
+   R1    drive on MID  D 3  Mid resid   -39.6  Side resid  -100.6
+   R1    drive on MID  D 5  Mid resid   -28.8  Side resid  -100.6
+   R1    drive on MID  D10  Mid resid    -7.4  Side resid   -98.1
+   R1    drive on SIDE D 3  Mid resid  -177.4  Side resid  -120.2
+   R1    drive on SIDE D 5  Mid resid  -169.7  Side resid  -113.9
+   R1    drive on SIDE D10  Mid resid  -159.4  Side resid   -92.5
+   R1.2  drive on MID  D 3  Mid resid   -32.1  Side resid  -100.7
+   R1.2  drive on MID  D 5  Mid resid   -24.6  Side resid  -100.5
+   R1.2  drive on MID  D10  Mid resid   -11.5  Side resid   -99.0
+   R1.2  drive on SIDE D 3  Mid resid  -149.1  Side resid   -38.3
+   R1.2  drive on SIDE D 5  Mid resid  -148.9  Side resid   -30.4
+   R1.2  drive on SIDE D10  Mid resid  -148.8  Side resid   -15.7
+ mono input, DRIVE 10 on SIDE: max |L-R| = 0
+
+## C continuity
+ automation 0/30/50/80/100 on Logic material: max sample-to-sample change of the DRIVE residual 0.21808 (at 10.20 s); within 100 ms of bar switches 0.18071
+ DC 0.25 with DRIVE 0 -> 10 step: max output step 0.000040
+ block    1 vs 256, constant DRIVE 7: max |diff| 0
+ block   37 vs 256, constant DRIVE 7: max |diff| 0
+ block   64 vs 256, constant DRIVE 7: max |diff| 0
+ block  512 vs 256, constant DRIVE 7: max |diff| 0
+ block 4096 vs 256, constant DRIVE 7: max |diff| 0
+ switch to bar 2 (DRIVE  3): max |d2| automated 0.39062 vs DRIVE held 0.39062
+ switch to bar 3 (DRIVE  5): max |d2| automated 0.40343 vs DRIVE held 0.39053
+ switch to bar 4 (DRIVE  8): max |d2| automated 0.32257 vs DRIVE held 0.31701
+ switch to bar 5 (DRIVE 10): max |d2| automated 0.33953 vs DRIVE held 0.33953
+
+## H Logic HARMONICS bounce (bars same-source pairs, reference only): see bar_pairs output in report.

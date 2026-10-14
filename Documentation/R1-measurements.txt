@@ -1,0 +1,148 @@
+equivalence rate=44100 mode=0 H=0 E=0 max_error=0
+equivalence rate=44100 mode=0 H=0.25 E=0 max_error=0
+equivalence rate=44100 mode=0 H=1 E=0 max_error=0
+equivalence rate=44100 mode=0 H=0 E=0.2 max_error=0
+equivalence rate=44100 mode=0 H=0 E=1 max_error=0
+equivalence rate=44100 mode=0 H=1 E=1 max_error=0
+equivalence rate=44100 mode=0 H=0.65 E=0.4 max_error=0
+equivalence rate=44100 mode=1 H=0 E=0 max_error=0
+equivalence rate=44100 mode=1 H=0.25 E=0 max_error=0
+equivalence rate=44100 mode=1 H=1 E=0 max_error=0
+equivalence rate=44100 mode=1 H=0 E=0.2 max_error=0
+equivalence rate=44100 mode=1 H=0 E=1 max_error=0
+equivalence rate=44100 mode=1 H=1 E=1 max_error=0
+equivalence rate=44100 mode=1 H=0.65 E=0.4 max_error=0
+equivalence rate=44100 mode=2 H=0 E=0 max_error=0
+equivalence rate=44100 mode=2 H=0.25 E=0 max_error=0
+equivalence rate=44100 mode=2 H=1 E=0 max_error=0
+equivalence rate=44100 mode=2 H=0 E=0.2 max_error=0
+equivalence rate=44100 mode=2 H=0 E=1 max_error=0
+equivalence rate=44100 mode=2 H=1 E=1 max_error=0
+equivalence rate=44100 mode=2 H=0.65 E=0.4 max_error=0
+equivalence rate=48000 mode=0 H=0 E=0 max_error=0
+equivalence rate=48000 mode=0 H=0.25 E=0 max_error=0
+equivalence rate=48000 mode=0 H=1 E=0 max_error=0
+equivalence rate=48000 mode=0 H=0 E=0.2 max_error=0
+equivalence rate=48000 mode=0 H=0 E=1 max_error=0
+equivalence rate=48000 mode=0 H=1 E=1 max_error=0
+equivalence rate=48000 mode=0 H=0.65 E=0.4 max_error=0
+equivalence rate=48000 mode=1 H=0 E=0 max_error=0
+equivalence rate=48000 mode=1 H=0.25 E=0 max_error=0
+equivalence rate=48000 mode=1 H=1 E=0 max_error=0
+equivalence rate=48000 mode=1 H=0 E=0.2 max_error=0
+equivalence rate=48000 mode=1 H=0 E=1 max_error=0
+equivalence rate=48000 mode=1 H=1 E=1 max_error=0
+equivalence rate=48000 mode=1 H=0.65 E=0.4 max_error=0
+equivalence rate=48000 mode=2 H=0 E=0 max_error=0
+equivalence rate=48000 mode=2 H=0.25 E=0 max_error=0
+equivalence rate=48000 mode=2 H=1 E=0 max_error=0
+equivalence rate=48000 mode=2 H=0 E=0.2 max_error=0
+equivalence rate=48000 mode=2 H=0 E=1 max_error=0
+equivalence rate=48000 mode=2 H=1 E=1 max_error=0
+equivalence rate=48000 mode=2 H=0.65 E=0.4 max_error=0
+equivalence rate=96000 mode=0 H=0 E=0 max_error=0
+equivalence rate=96000 mode=0 H=0.25 E=0 max_error=0
+equivalence rate=96000 mode=0 H=1 E=0 max_error=0
+equivalence rate=96000 mode=0 H=0 E=0.2 max_error=0
+equivalence rate=96000 mode=0 H=0 E=1 max_error=0
+equivalence rate=96000 mode=0 H=1 E=1 max_error=0
+equivalence rate=96000 mode=0 H=0.65 E=0.4 max_error=0
+equivalence rate=96000 mode=1 H=0 E=0 max_error=0
+equivalence rate=96000 mode=1 H=0.25 E=0 max_error=0
+equivalence rate=96000 mode=1 H=1 E=0 max_error=0
+equivalence rate=96000 mode=1 H=0 E=0.2 max_error=0
+equivalence rate=96000 mode=1 H=0 E=1 max_error=0
+equivalence rate=96000 mode=1 H=1 E=1 max_error=0
+equivalence rate=96000 mode=1 H=0.65 E=0.4 max_error=0
+equivalence rate=96000 mode=2 H=0 E=0 max_error=0
+equivalence rate=96000 mode=2 H=0.25 E=0 max_error=0
+equivalence rate=96000 mode=2 H=1 E=0 max_error=0
+equivalence rate=96000 mode=2 H=0 E=0.2 max_error=0
+equivalence rate=96000 mode=2 H=0 E=1 max_error=0
+equivalence rate=96000 mode=2 H=1 E=1 max_error=0
+equivalence rate=96000 mode=2 H=0.65 E=0.4 max_error=0
+MS neutral max_error=1.78814e-07
+matrix_error=1.44646e-07 independent_side_error=1.19209e-07 mid_difference=0.425699 trim_error=7.69825e-10 mode_step=2.74479e-05
+DRIVE rate=44100 signal=0 control=0 rms=0.565675 settled_peak=0.8 peak_including_startup=0.8 crest=1.41424
+DRIVE rate=44100 signal=0 control=0.2 rms=0.559026 settled_peak=0.788219 peak_including_startup=0.799478 crest=1.40999
+DRIVE rate=44100 signal=0 control=0.6 rms=0.498806 settled_peak=0.690302 peak_including_startup=0.799194 crest=1.38391
+DRIVE rate=44100 signal=0 control=1 rms=0.266688 settled_peak=0.343904 peak_including_startup=0.79832 crest=1.28953
+DRIVE rate=44100 signal=1 control=0 rms=0.01974 settled_peak=0.565884 peak_including_startup=0.565884 crest=28.6669
+DRIVE rate=44100 signal=1 control=0.2 rms=0.0196877 settled_peak=0.564005 peak_including_startup=0.565883 crest=28.6476
+DRIVE rate=44100 signal=1 control=0.6 rms=0.0188347 settled_peak=0.534014 peak_including_startup=0.565877 crest=28.3527
+DRIVE rate=44100 signal=1 control=1 rms=0.0119518 settled_peak=0.296892 peak_including_startup=0.565862 crest=24.8408
+DRIVE rate=44100 signal=2 control=0 rms=0.0975464 settled_peak=1.22302 peak_including_startup=1.22302 crest=12.5378
+DRIVE rate=44100 signal=2 control=0.2 rms=0.0971989 settled_peak=1.20088 peak_including_startup=1.20088 crest=12.3549
+DRIVE rate=44100 signal=2 control=0.6 rms=0.0921694 settled_peak=1.04314 peak_including_startup=1.04314 crest=11.3177
+DRIVE rate=44100 signal=2 control=1 rms=0.054855 settled_peak=0.454224 peak_including_startup=0.497078 crest=8.28045
+alias rate=44100 oversampling=4 f_over_fs=0.184448 level=0.8 third_fold_dBc=-82.7165
+alias rate=44100 oversampling=4 f_over_fs=0.184448 level=1.13137 third_fold_dBc=-83.9449
+alias rate=44100 oversampling=4 f_over_fs=0.244507 level=0.8 third_fold_dBc=-116.698
+alias rate=44100 oversampling=4 f_over_fs=0.244507 level=1.13137 third_fold_dBc=-117.968
+alias rate=44100 oversampling=4 f_over_fs=0.366333 level=0.8 third_fold_dBc=-109.417
+alias rate=44100 oversampling=4 f_over_fs=0.366333 level=1.13137 third_fold_dBc=-111.114
+alias rate=44100 oversampling=16 f_over_fs=0.184448 level=0.8 third_fold_dBc=-82.6032
+alias rate=44100 oversampling=16 f_over_fs=0.184448 level=1.13137 third_fold_dBc=-83.8371
+alias rate=44100 oversampling=16 f_over_fs=0.244507 level=0.8 third_fold_dBc=-116.81
+alias rate=44100 oversampling=16 f_over_fs=0.244507 level=1.13137 third_fold_dBc=-118.08
+alias rate=44100 oversampling=16 f_over_fs=0.366333 level=0.8 third_fold_dBc=-110.077
+alias rate=44100 oversampling=16 f_over_fs=0.366333 level=1.13137 third_fold_dBc=-111.812
+harmonics rate=44100 DRIVE=0.2 H3_dBc=-49.588 H5_dBc=-69.4618
+harmonics rate=44100 DRIVE=0.6 H3_dBc=-31.4896 H5_dBc=-43.1644
+harmonics rate=44100 DRIVE=1 H3_dBc=-18.7225 H5_dBc=-25.4046
+DRIVE rate=48000 signal=0 control=0 rms=0.565705 settled_peak=0.8 peak_including_startup=0.802621 crest=1.41416
+DRIVE rate=48000 signal=0 control=0.2 rms=0.559055 settled_peak=0.788226 peak_including_startup=0.802599 crest=1.40993
+DRIVE rate=48000 signal=0 control=0.6 rms=0.498831 settled_peak=0.690346 peak_including_startup=0.802515 crest=1.38393
+DRIVE rate=48000 signal=0 control=1 rms=0.266699 settled_peak=0.344028 peak_including_startup=0.802292 crest=1.28995
+DRIVE rate=48000 signal=1 control=0 rms=0.01974 settled_peak=0.565884 peak_including_startup=0.565884 crest=28.6669
+DRIVE rate=48000 signal=1 control=0.2 rms=0.019687 settled_peak=0.563998 peak_including_startup=0.565883 crest=28.6482
+DRIVE rate=48000 signal=1 control=0.6 rms=0.0188299 settled_peak=0.533971 peak_including_startup=0.565877 crest=28.3577
+DRIVE rate=48000 signal=1 control=1 rms=0.0119518 settled_peak=0.296892 peak_including_startup=0.565864 crest=24.8408
+DRIVE rate=48000 signal=2 control=0 rms=0.0942614 settled_peak=1.24256 peak_including_startup=1.24256 crest=13.1821
+DRIVE rate=48000 signal=2 control=0.2 rms=0.0939211 settled_peak=1.21629 peak_including_startup=1.21629 crest=12.9501
+DRIVE rate=48000 signal=2 control=0.6 rms=0.0891537 settled_peak=1.04172 peak_including_startup=1.04172 crest=11.6846
+DRIVE rate=48000 signal=2 control=1 rms=0.0539893 settled_peak=0.459679 peak_including_startup=0.476184 crest=8.51425
+alias rate=48000 oversampling=4 f_over_fs=0.184448 level=0.8 third_fold_dBc=-82.7165
+alias rate=48000 oversampling=4 f_over_fs=0.184448 level=1.13137 third_fold_dBc=-83.9449
+alias rate=48000 oversampling=4 f_over_fs=0.244507 level=0.8 third_fold_dBc=-116.698
+alias rate=48000 oversampling=4 f_over_fs=0.244507 level=1.13137 third_fold_dBc=-117.968
+alias rate=48000 oversampling=4 f_over_fs=0.366333 level=0.8 third_fold_dBc=-109.417
+alias rate=48000 oversampling=4 f_over_fs=0.366333 level=1.13137 third_fold_dBc=-111.114
+alias rate=48000 oversampling=16 f_over_fs=0.184448 level=0.8 third_fold_dBc=-82.6032
+alias rate=48000 oversampling=16 f_over_fs=0.184448 level=1.13137 third_fold_dBc=-83.8371
+alias rate=48000 oversampling=16 f_over_fs=0.244507 level=0.8 third_fold_dBc=-116.81
+alias rate=48000 oversampling=16 f_over_fs=0.244507 level=1.13137 third_fold_dBc=-118.08
+alias rate=48000 oversampling=16 f_over_fs=0.366333 level=0.8 third_fold_dBc=-110.077
+alias rate=48000 oversampling=16 f_over_fs=0.366333 level=1.13137 third_fold_dBc=-111.812
+harmonics rate=48000 DRIVE=0.2 H3_dBc=-49.5873 H5_dBc=-69.4671
+harmonics rate=48000 DRIVE=0.6 H3_dBc=-31.489 H5_dBc=-43.166
+harmonics rate=48000 DRIVE=1 H3_dBc=-18.7225 H5_dBc=-25.4046
+DRIVE rate=96000 signal=0 control=0 rms=0.565687 settled_peak=0.8 peak_including_startup=0.800328 crest=1.41421
+DRIVE rate=96000 signal=0 control=0.2 rms=0.559058 settled_peak=0.788517 peak_including_startup=0.800307 crest=1.41044
+DRIVE rate=96000 signal=0 control=0.6 rms=0.498958 settled_peak=0.692218 peak_including_startup=0.800232 crest=1.38733
+DRIVE rate=96000 signal=0 control=1 rms=0.266692 settled_peak=0.343984 peak_including_startup=0.800034 crest=1.28982
+DRIVE rate=96000 signal=1 control=0 rms=0.01974 settled_peak=0.565884 peak_including_startup=0.565884 crest=28.6669
+DRIVE rate=96000 signal=1 control=0.2 rms=0.0196863 settled_peak=0.564138 peak_including_startup=0.565884 crest=28.6564
+DRIVE rate=96000 signal=1 control=0.6 rms=0.0188248 settled_peak=0.535144 peak_including_startup=0.565881 crest=28.4276
+DRIVE rate=96000 signal=1 control=1 rms=0.0119518 settled_peak=0.296892 peak_including_startup=0.565875 crest=24.8408
+DRIVE rate=96000 signal=2 control=0 rms=0.0939631 settled_peak=1.17891 peak_including_startup=1.17891 crest=12.5465
+DRIVE rate=96000 signal=2 control=0.2 rms=0.093618 settled_peak=1.15413 peak_including_startup=1.15413 crest=12.3281
+DRIVE rate=96000 signal=2 control=0.6 rms=0.0888404 settled_peak=0.987105 peak_including_startup=0.987105 crest=11.111
+DRIVE rate=96000 signal=2 control=1 rms=0.0542169 settled_peak=0.442198 peak_including_startup=0.442198 crest=8.15609
+alias rate=96000 oversampling=4 f_over_fs=0.184448 level=0.8 third_fold_dBc=-82.7165
+alias rate=96000 oversampling=4 f_over_fs=0.184448 level=1.13137 third_fold_dBc=-83.9449
+alias rate=96000 oversampling=4 f_over_fs=0.244507 level=0.8 third_fold_dBc=-116.698
+alias rate=96000 oversampling=4 f_over_fs=0.244507 level=1.13137 third_fold_dBc=-117.968
+alias rate=96000 oversampling=4 f_over_fs=0.366333 level=0.8 third_fold_dBc=-109.417
+alias rate=96000 oversampling=4 f_over_fs=0.366333 level=1.13137 third_fold_dBc=-111.114
+alias rate=96000 oversampling=16 f_over_fs=0.184448 level=0.8 third_fold_dBc=-82.6032
+alias rate=96000 oversampling=16 f_over_fs=0.184448 level=1.13137 third_fold_dBc=-83.8371
+alias rate=96000 oversampling=16 f_over_fs=0.244507 level=0.8 third_fold_dBc=-116.81
+alias rate=96000 oversampling=16 f_over_fs=0.244507 level=1.13137 third_fold_dBc=-118.08
+alias rate=96000 oversampling=16 f_over_fs=0.366333 level=0.8 third_fold_dBc=-110.077
+alias rate=96000 oversampling=16 f_over_fs=0.366333 level=1.13137 third_fold_dBc=-111.812
+harmonics rate=96000 DRIVE=0.2 H3_dBc=-49.5857 H5_dBc=-69.4932
+harmonics rate=96000 DRIVE=0.6 H3_dBc=-31.4875 H5_dBc=-43.1744
+harmonics rate=96000 DRIVE=1 H3_dBc=-18.7225 H5_dBc=-25.4046
+programme=PRUEBAS HARMOHIT+G80.wav rate=48000 frames=480000 input_rms=0.121529 output_rms=0.114743 input_peak=1 output_peak=0.91151
+MASTER R1 checks passed; physical host smoke remains pending.
