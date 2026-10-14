@@ -1,112 +1,175 @@
-# VitaPlug HARMOHIT
+# VitaPlug HARMOHIT MASTER
 
-**VitaPlug Creative Bundle · Vitalab**
-*vintage character / precise control*
+**v0.2.0 — R2 · Motor DRIVE 670**
 
-HARMOHIT is an in-progress C++/JUCE audio-effects project comprising two AU/VST3 processors that share a header-only DSP core:
+Procesador de coloración y dinámica para mastering, en formato AU/VST3. Tiene tres motores: HARMONICS, EXCITER y DRIVE 670. Trabaja en modo STEREO o en Mid/Side, con bancos de parámetros independientes, y termina en un OUTPUT TRIM manual.
 
-- **VitaPlug HARMOHIT MIX** — a broader, creative coloration variant.
-- **VitaPlug HARMOHIT MASTER** — a more restrained variant intended for smaller adjustments.
+![Editor de HARMOHIT MASTER](Documentation/screenshots/HARMOHIT_MASTER_v0.2.0_editor_render_1520x760.png)
 
-The project explores spectral shaping, aural excitation and analog-inspired drive. It is published as a technical portfolio and learning record; see [Reuse and licensing](#reuse-and-licensing) before using any source or assets.
+*Render del componente editor real de la versión v0.2.0 (captura fuera de pantalla del plugin, a 2×, con los parámetros por defecto). No es una captura de Logic ni un diseño alternativo. Es idéntico píxel a píxel a la interfaz R1.2 aprobada.*
 
-## Final UI design
+---
 
-The following 760×380 image is the approved final visual design for HARMOHIT MIX. It establishes the vintage Vitalab presentation, control layout and visual identity for the final UI.
+## 1. Qué es
 
-![Approved final HARMOHIT MIX UI design](Documentation/screenshots/HARMOHIT_MIX_final_UI_design_760x380.png)
+HARMOHIT MASTER es la versión de mastering de VitaPlug HARMOHIT. Mantiene el carácter armónico de HARMOHIT MIX y añade lo que necesita un bus de mastering:
+- procesamiento Mid/Side con bancos independientes;
+- un DRIVE con compresión variable-mu y coloración;
+- un control final de nivel en manos del ingeniero.
 
-## Current implementation
+## 2. Filosofía Vitalab
 
-The current source of truth is commit `34a1909` and the code in this repository.
+- **Criterio musical primero.** Cada motor se aprueba escuchando música real en un DAW, no solo con medidas.
+- **Medidas que sostienen las decisiones.** Toda la historia del DRIVE, incluidas dos versiones descartadas, está documentada con sus pruebas en `Documentation/`.
+- **Pocos mandos, mucho criterio.** Un solo DRIVE gobierna compresión, color y ganancia. No hay mandos de umbral, ataque ni ratio.
+- **El nivel final es del ingeniero.** No hay limitador, normalización ni compensación automática.
 
-| Area | Implemented today |
-| --- | --- |
-| Plug-in formats | AU and VST3 on macOS; VST3 on Windows, as configured by CMake |
-| Audio layouts | Mono and stereo |
-| DSP | 4× oversampled shared core, 20 ms parameter smoothing, finite-sample containment and reported host latency |
-| Controls | HARMONICS, EXCITER, range (3 kHz / 8 kHz), PUSH ALL, DRIVE, Output Trim and Bypass |
-| State | APVTS parameter serialization, including migration from the earlier three-state EXCITER mode |
-| Metering | Input and post-Trim output VU taps with a 300 ms power integration |
-| Editor | A functional 520×300 engineering editor with direct parameter attachments |
+## 3. HARMOHIT MIX frente a HARMOHIT MASTER
 
-The approved final UI design above, the vintage panel artwork under `Resources/HARMOHIT/`, and the large visual-check images describe the project’s visual direction. They are distinct from the current runtime editor drawn by `Source/PluginEditor.cpp`; the current compiled editor is the engineering interface described above. This distinction keeps the repository technically accurate while preserving the final UI design as the visual reference.
+| | HARMOHIT MIX | HARMOHIT MASTER |
+|---|---|---|
+| Uso | Pistas y buses de mezcla | Bus de mastering |
+| HARMONICS / EXCITER | Algoritmo MIX | El mismo algoritmo, equivalente bit a bit con DRIVE 0 |
+| DRIVE | Saturación creativa con ganancia | DRIVE 670: compresión variable-mu, coloración y POST GAIN |
+| Modos | Estéreo | STEREO y M/S, con bancos STEREO, MID y SIDE independientes |
+| Identificadores AU | `aufx / HhMx / Vtpl` | `aufx / HmR1 / Vtpl` |
 
-## Logic Pro smoke capture
+Ambos plugins pueden convivir en la misma sesión.
 
-The following is an authentic HARMOHIT MIX smoke capture from Logic Pro, recorded on 9 October 2026. It is retained as evidence of an in-host test and is distinct from the design-reference artwork.
+## 4. Arquitectura
 
-![HARMOHIT MIX running in Logic Pro](Documentation/screenshots/HARMOHIT_MIX_Logic_Pro_smoke_2026-10-09.png)
+```
+L/R ─► banco STEREO (L/R enlazados) ──────────────┐
+    └► M/S ─► banco MID (independiente) ──────────┼─► decodificación M/S + fundido de modo ─► OUTPUT TRIM ─► salida
+          └─► banco SIDE (independiente) ─────────┘
 
-The capture documents the tested MIX presentation at that point in development; the checked-in source and implementation-status notes above remain the authoritative description of the current code.
-
-## Signal path
-
-```text
-input → 4× oversampling → HARMONICS → EXCITER + DRIVE → Output Trim → downsampling
+Cada banco, en su propio dominio sobremuestreado 4×:
+  dry ─► HARMONICS ─► EXCITER ────────────────► contribución H/E (coloured − dry)
+  dry ─► DRIVE 670 (variable-mu, color, POST GAIN) ─► p670
+  salida del banco = p670 + (coloured − dry)
 ```
 
-`EXCITER` and `DRIVE` add nonlinear residuals to the current signal. `HARMONICS` is variant-specific: MASTER retains its earlier nonlinear residual algorithm, while MIX uses the spectral macro described below. There is no final limiter, mandatory normalization or automatic output compensation; Output Trim remains manual. The oversampling route is retained during bypass so host latency alignment is preserved.
+DRIVE trabaja **en paralelo** con HARMONICS/EXCITER:
+- el seco nunca se suma dos veces;
+- las tres ramas están alineadas exactamente porque comparten la misma muestra sobremuestreada;
+- HARMONICS y EXCITER no pasan por el compresor ni por el POST GAIN.
 
-## HARMONICS in HARMOHIT MIX
+Detalles en [Documentation/MASTER_R2_TECHNICAL.md](Documentation/MASTER_R2_TECHNICAL.md).
 
-The parameter name **HARMONICS** has been retained for continuity, but it must not be described as a nonlinear harmonic generator in the current MIX implementation.
+## 5. HARMONICS
 
-Early development used nonlinear harmonic generation. Listening and smoke tests showed that its predominant result was distortion that was not useful for this product, so the MIX macro was rebuilt as three linear shelving stages:
+Modelado espectral de tres estantes de primer orden (cuerpo, presencia y aire), con un macro progresivo. Es exactamente el comportamiento de HARMOHIT MIX.
 
-| Stage | Nominal transition | Maximum at macro = 100% |
-| --- | ---: | ---: |
-| Body low shelf | 300 Hz | +6 dB |
-| Presence high shelf | 1.8 kHz | +7 dB |
-| Air high shelf | 12 kHz | +9 dB |
+## 6. EXCITER
 
-These R5 maxima are present in `calibrateMixHarmonics()` in `Source/DSP/HarmoCore.h`. The macro uses independent concave gain laws, so the intermediate position is deliberately not a simple linear fraction of each maximum.
+Excitación aural por bandas: presencia en 3 kHz o brillo en 8 kHz con **RANGE**, o ambas con **PUSH ALL**. Los cambios de banda se funden sin discontinuidades. Es exactamente el comportamiento de HARMOHIT MIX.
 
-The shelves are cascaded. At a frequency where both high shelves contribute, their gains multiply in linear gain (and therefore add in dB); the +7 dB and +9 dB figures are individual stage maxima, not a single capped “treble” boost. The response also contains the low shelf, so the final frequency response is the product of all applicable stages. No saturation, DC blocking, dry/wet cancellation or output normalization is added by the MIX HARMONICS macro itself.
+## 7. DRIVE 670
 
-## Build
+Un macroprocesador de un solo mando. Está **inspirado** en el comportamiento variable-mu y en la coloración de compresores clásicos de válvulas como el Fairchild 670. **No es una emulación del hardware** ni está afiliado a sus fabricantes (véase §15).
 
-Requirements:
+- **Compresión variable-mu.** La ganancia baja de forma exponencial con la tensión de control y la distorsión crece con la reducción de ganancia, como en las válvulas de corte remoto. La detección es por **realimentación**, con enlace estéreo en el banco STEREO.
+- **Coloración.** Una etapa de salida push-pull aporta armónicos pares e impares que aparecen aunque la compresión sea mínima. Un transformador de salida satura la zona grave.
+- **Tres regímenes por posición del mando:**
 
-- CMake 3.22 or later
-- A C++20 compiler
-- A local **JUCE 9.0.3** source checkout
+| DRIVE | Régimen | Ataque / recuperación de referencia |
+|---|---|---|
+| 1–3 | TC5 | 0,2 ms; recuperación dependiente del programa (≈ 2 s en picos aislados, hasta 10 s con carga sostenida) |
+| 4–7 | TC3 | 0,4 ms / 2 s |
+| 8–10 | TC2 | 0,2 ms / 0,8 s |
 
-JUCE is deliberately not vendored. Point CMake at it with `JUCE_DIR`; the default is a developer-local sibling path and will not normally exist after a fresh clone.
+- **POST GAIN:** +1 dB por paso, de +0 a +10 dB, aplicado después de toda la compresión y la coloración. **DRIVE empuja el nivel a propósito.** Los valores pueden superar 0 dBFS dentro del procesamiento en coma flotante. Bajar el nivel con OUTPUT TRIM es responsabilidad del ingeniero.
+- **DRIVE 0** desactiva por completo el procesamiento de DRIVE.
+- **Mando:** el parámetro va de 0 a 100 y se muestra de 0 a 10. Internamente se usan 11 pasos enteros (redondeo con una pequeña histéresis). El "7" impreso corresponde al paso 7.
+
+**Nivel de entrada** (en la entrada de cada banco):
+- **Verificado:** los objetivos de reducción de ganancia se calibraron con una mezcla de referencia a **−18 dBFS RMS**. En pasajes fuertes son 0,5 / 1 / 1,5 dB con DRIVE 1–3, 2 a 3 dB con DRIVE 4–7 y 3,5 / 4,2 / 5 dB con DRIVE 8–10.
+- **Provisional:** se recomienda trabajar entre **−20 y −14 dBFS RMS**. Es una referencia preliminar, no una restricción. Con más nivel hay más compresión y más color impar; con menos nivel, el DRIVE se acerca a color sin compresión.
+
+## 8. STEREO y M/S
+
+- **STEREO:** un banco procesa L/R con un único detector enlazado, lo que preserva la imagen.
+- **M/S:** la señal se codifica en Mid y Side. Cada componente pasa por su propio banco y después se reconstruye L/R. **MID y SIDE se procesan siempre a la vez.** Los botones **M** y **S** solo eligen qué banco se edita en la interfaz.
+
+### Flujo de mastering Mid/Side
+
+Un flujo aprobado en escucha real:
+- **MID:** DRIVE 670 para el control dinámico, la cohesión y el color del centro (bombo, bajo, voz).
+- **SIDE:** HARMONICS y EXCITER para enriquecer la información lateral.
+
+En la escucha de validación produjo control dinámico, transitorios musicales y una apertura estéreo notable. Es un ejemplo, no un preset ni una receta universal. Explicación, riesgos (exceso de Side y compatibilidad mono) y comprobaciones recomendadas en [Documentation/MID_SIDE_MASTERING_WORKFLOW.md](Documentation/MID_SIDE_MASTERING_WORKFLOW.md).
+
+## 9. Bancos independientes
+
+STEREO, MID y SIDE tienen cada uno su HARMONICS, EXCITER, RANGE, PUSH ALL y DRIVE, y su propio motor DRIVE 670: detector, memoria, color, POST GAIN y rampas. Ningún estado se comparte entre bancos. Los tres siguen activos para que los cambios de modo no produzcan clics.
+
+## 10. OUTPUT TRIM
+
+Ganancia global manual de −24 a +12 dB, al final de la cadena. Entre el POST GAIN y el OUTPUT TRIM solo hay operaciones lineales en coma flotante, así que cualquier exceso puede bajarse sin muestras recortadas. El plugin no tiene limitador ni clipper.
+
+## 11. Compilación
+
+Requisitos:
+- macOS con Xcode o Command Line Tools;
+- CMake ≥ 3.22;
+- JUCE **9.0.3**, no incluido en el repositorio. La ruta se indica con `JUCE_DIR`.
 
 ```sh
-cmake -S . -B build -G "Unix Makefiles" \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DJUCE_DIR=/absolute/path/to/JUCE
-cmake --build build --target VitaPlugHarmoHitDSPTests
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64 \
+      -DJUCE_DIR=/ruta/a/JUCE-9.0.3
+cmake --build build --config Release -j8
 ctest --test-dir build --output-on-failure
 ```
 
-Build plug-in targets when the platform toolchain and JUCE configuration are available:
+- Los artefactos quedan en `build/VitaPlugHarmoHitMasterR1_artefacts/Release/{AU,VST3}`. Compilar no instala nada.
+- `HarmoHitMasterTests` y `HarmoHitDriveTests` se compilan siempre.
+- La batería de equivalencia frente al prototipo DRIVE 670 LAB (`HarmoHitDrive670IntegrationTests`) solo se compila si existe el proyecto de laboratorio en `DRIVE670_LAB_DIR` (no publicado). Además usa material de audio privado que no está en el repositorio.
 
-```sh
-cmake --build build --target \
-  VitaPlugHarmoHitMix_AU VitaPlugHarmoHitMix_VST3 \
-  VitaPlugHarmoHitMaster_AU VitaPlugHarmoHitMaster_VST3
-```
+## 12. Instalación
 
-On Windows, CMake configures VST3 only. The `VitaPlugHarmoHitMixEditorPreview` target is a development-only JUCE application for inspecting the real MIX editor; it is not an installer or plug-in format.
+Los binarios de cada versión se publican como assets del [Release](../../releases) cuando su distribución está autorizada (§15).
+- AU: `~/Library/Audio/Plug-Ins/Components/`
+- VST3: `~/Library/Audio/Plug-Ins/VST3/`
 
-## Verification
+Los binarios están firmados **ad hoc**: no tienen firma Developer ID ni notarización de Apple. El paquete incluye instrucciones para instalarlos sin desactivar Gatekeeper de forma global. En Logic, después de instalar, usa Gestor de plug-ins, "Restablecer y volver a analizar selección".
 
-`VitaPlugHarmoHitDSPTests` covers, among other things:
+## 13. Compatibilidad verificada
 
-- 4× oversampling and latency coherence;
-- neutral and bypass alignment;
-- R5 HARMONICS response, monotonic progression, linearity and sample-rate checks;
-- mono/stereo, block-size and finite-value safety;
-- automation, parameter serialization and legacy-state migration;
-- EXCITER range/PUSH ALL routing and VU tap placement.
+| Plataforma | Estado |
+|---|---|
+| macOS 26.5, Apple Silicon (M5), arm64 | Compilado y probado |
+| Logic Pro 12.4, AU | Prueba de escucha real del usuario; `auval` superado |
+| VST3, arm64 | Compilado y cargado en un host de pruebas JUCE junto a HARMOHIT MIX; **no probado todavía en un DAW** |
+| 44,1, 48 y 96 kHz | Probado (batería automática) |
+| macOS Intel (x86_64) | **No compilado ni probado** |
+| Windows | **No probado.** El workflow heredado de MIX está desactivado |
 
-The detailed engineering record, including known limits and the development decisions behind the current DSP, is in [Documentation/DEVELOPMENT_NOTES.md](Documentation/DEVELOPMENT_NOTES.md). Third-party and repository-publication notes are in [Documentation/THIRD_PARTY_AND_PUBLICATION.md](Documentation/THIRD_PARTY_AND_PUBLICATION.md).
+## 14. Limitaciones conocidas
 
-## Reuse and licensing
+- **CPU:** unos 6,3 % de un núcleo a 48 kHz (M5), porque los tres bancos ejecutan DRIVE 670 siempre. R1.2 consumía 3,2 %.
+- **Calibración SIDE provisional:** referencia de operación de +15 dB, pendiente de una escucha específica de DRIVE en el Side.
+- **Puntero del mando:** está desplazado unos 3° respecto al ángulo programado. Es un rasgo preexistente de la interfaz congelada.
+- **Sesiones anteriores a R2:** recuperan el valor de DRIVE pero suenan distinto, porque el motor ha cambiado. Abre siempre una copia y revisa el nivel de salida antes de reproducir (§16).
+- **Distribución:** solo arm64, sin notarizar.
 
-No license for reuse of VitaPlug HARMOHIT source code or artwork is currently offered. This public repository does not grant general permission to reuse, modify or redistribute the project’s own code or assets.
+## 15. Créditos, licencias y marcas
 
-JUCE and any other third-party material remain subject to their own licenses. A person building, distributing or otherwise using a derivative must independently ensure that their JUCE licensing and all other obligations are satisfied; see [Documentation/THIRD_PARTY_AND_PUBLICATION.md](Documentation/THIRD_PARTY_AND_PUBLICATION.md).
+- **Diseño, dirección musical y aprobación:** SerxDev — VitaPlug / Vitalab.
+- **JUCE 9.0.3** (Raw Material Software): licencia dual AGPLv3 / licencia comercial JUCE 9. No se incluye en el repositorio.
+- **VST3 SDK** (Steinberg Media Technologies GmbH, incluido en JUCE): licencia MIT. La nota completa está en [Documentation/THIRD_PARTY_AND_PUBLICATION.md](Documentation/THIRD_PARTY_AND_PUBLICATION.md).
+- **Código e imágenes de HARMOHIT:** el repositorio es público para estudio y presentación. **No incluye licencia** por decisión explícita del propietario; la visibilidad pública no concede derechos de reutilización ni redistribución.
+- **Marcas:** "Fairchild" y "Fairchild 670" son marcas de sus respectivos titulares. Se citan solo como referencia técnica. VitaPlug HARMOHIT MASTER es un producto independiente, sin afiliación, patrocinio ni respaldo. AU y VST son marcas de Apple y Steinberg respectivamente.
+
+## 16. Historial de versiones
+
+| Versión | Contenido |
+|---|---|
+| **v0.2.0 (R2)** | Nuevo motor DRIVE 670 (variable-mu, tres regímenes y POST GAIN), integrado bit a bit desde el prototipo aprobado. Calibración por banco y mapeo del DRIVE a pasos. Interfaz idéntica a R1.2. Aprobado en escucha real en Logic. |
+| R1.2 | DRIVE adaptativo con rodilla referida al programa. Descartado tras la escucha. |
+| R1.1 | Diagnóstico de DRIVE y auditoría independiente (R12). |
+| R1 | Primera versión MASTER: bancos STEREO/MID/SIDE, HARMONICS y EXCITER de MIX, interfaz definitiva. |
+| ≤ 0.1.0 | Historial heredado de HARMOHIT MIX, conservado en Git. |
+
+Notas completas en [CHANGELOG.md](CHANGELOG.md).
+
+**Cambio de sonido entre R1.2 y R2:** el parámetro DRIVE conserva su identificador y su rango, pero su motor y su significado son nuevos. Una sesión antigua con DRIVE a 70 aplica ahora +7 dB de POST GAIN además de compresión. Prueba primero sobre copias de tus sesiones y no sobrescribas presets antiguos.
