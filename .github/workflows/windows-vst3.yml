@@ -8,6 +8,8 @@ permissions:
 
 jobs:
   build-windows-vst3:
+    # Inherited MIX workflow retained as history only; MASTER has no remote/CI release.
+    if: ${{ false }}
     name: Build and test HARMOHIT MIX Windows x64 VST3
     # Keep the same proven runner as VitaPlug Gainer80.
     runs-on: windows-2022

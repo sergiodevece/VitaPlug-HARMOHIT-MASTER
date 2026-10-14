@@ -1,121 +1,92 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-
-namespace
-{
-juce::AudioParameterFloatAttributes percentAttributes()
-{
-    return juce::AudioParameterFloatAttributes().withLabel("%");
-}
-juce::AudioParameterFloatAttributes dbAttributes()
-{
-    return juce::AudioParameterFloatAttributes().withLabel("dB");
-}
-bool containsParameterId(const juce::ValueTree& state, const juce::String& id)
-{
-    for (const auto& child : state)
-        if (child.getProperty("id").toString() == id) return true;
-    return false;
-}
-#if defined(VITAPLUG_HARMOHIT_MASTER)
-constexpr auto productVariant = vitaplug::harmohit::dsp::ProductVariant::master;
-#else
-constexpr auto productVariant = vitaplug::harmohit::dsp::ProductVariant::mix;
-#endif
-}
-
 HarmoHitAudioProcessor::HarmoHitAudioProcessor()
     : AudioProcessor(BusesProperties().withInput("Input", juce::AudioChannelSet::stereo(), true)
-                                      .withOutput("Output", juce::AudioChannelSet::stereo(), true)),
-      parameters(*this, nullptr, "PARAMETERS", createParameterLayout()), core(productVariant)
+                                     .withOutput("Output", juce::AudioChannelSet::stereo(), true)),
+      parameters(*this, nullptr, "MASTER_R1", createParameterLayout())
 {
-    harmonics = parameters.getRawParameterValue("harmonics");
-    exciter = parameters.getRawParameterValue("exciter");
-    drive = parameters.getRawParameterValue("drive");
-    exciterMode = parameters.getRawParameterValue("exciterMode");
-    exciterRange = parameters.getRawParameterValue("exciterRange");
-    pushAll = parameters.getRawParameterValue("pushAll");
+    const char* prefixes[]{"stereo", "mid", "side"};
+    for (int i = 0; i < 3; ++i) {
+        const juce::String prefix = juce::String(prefixes[i]) + ".";
+        banks[static_cast<size_t>(i)] = {
+            parameters.getRawParameterValue(prefix+"harmonics"),
+            parameters.getRawParameterValue(prefix+"exciter"),
+            parameters.getRawParameterValue(prefix+"drive"),
+            parameters.getRawParameterValue(prefix+"range"),
+            parameters.getRawParameterValue(prefix+"pushAll")};
+    }
     outputTrim = parameters.getRawParameterValue("outputTrim");
     bypass = parameters.getRawParameterValue("bypass");
+    processingMode = parameters.getRawParameterValue("processingMode");
 }
-
-const juce::String HarmoHitAudioProcessor::getName() const
-{
-#if defined(VITAPLUG_HARMOHIT_MASTER)
-    return "VitaPlug HARMOHIT MASTER";
-#else
-    return "VitaPlug HARMOHIT MIX";
-#endif
-}
-
-juce::AudioProcessorEditor* HarmoHitAudioProcessor::createEditor()
-{
-    return new HarmoHitAudioProcessorEditor(*this);
-}
-
-juce::AudioProcessorValueTreeState::ParameterLayout HarmoHitAudioProcessor::createParameterLayout()
-{
-    using Range = juce::NormalisableRange<float>;
+const juce::String HarmoHitAudioProcessor::getName() const { return "VitaPlug HARMOHIT MASTER"; }
+juce::AudioProcessorEditor* HarmoHitAudioProcessor::createEditor() { return new HarmoHitAudioProcessorEditor(*this); }
+juce::AudioProcessorValueTreeState::ParameterLayout HarmoHitAudioProcessor::createParameterLayout() {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
-    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { "harmonics", 1 }, "Harmonics", Range { 0.0f, 100.0f, 0.1f }, 0.0f, percentAttributes()));
-    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { "exciter", 1 }, "Exciter", Range { 0.0f, 100.0f, 0.1f }, 0.0f, percentAttributes()));
-    // Kept solely to read sessions made by the original editor. New processing
-    // is driven by exciterRange + pushAll, both of which are valid without an
-    // editor instance.
-    layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID { "exciterMode", 1 }, "Exciter Mode", juce::StringArray { "3 kHz", "8 kHz", "PUSH ALL" }, 0));
-    layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID { "exciterRange", 1 }, "Exciter Range", juce::StringArray { "3 kHz", "8 kHz" }, 0));
-    layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID { "pushAll", 1 }, "Push All", false));
-    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { "drive", 1 }, "Drive", Range { 0.0f, 100.0f, 0.1f }, 0.0f, percentAttributes()));
-    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID { "outputTrim", 1 }, "Output Trim", Range { -24.0f, 12.0f, 0.1f }, 0.0f, dbAttributes()));
-    layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID { "bypass", 1 }, "Bypass", false));
+    using Range = juce::NormalisableRange<float>;
+    for (const auto* prefix : {"stereo", "mid", "side"}) {
+        const auto name = juce::String(prefix);
+        for (const auto* control : {"harmonics", "exciter", "drive"})
+            layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{name+"."+control,1},
+                name+" "+control, Range{0,100,0.1f},0,
+                juce::AudioParameterFloatAttributes{}.withLabel("%")));
+        layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID{name+".range",1},
+            name+" Range",juce::StringArray{"3 kHz","8 kHz"},0));
+        layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID{name+".pushAll",1},name+" Push All",false));
+    }
+    layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID{"processingMode",1},
+        "Processing Mode",juce::StringArray{"STEREO","M/S"},0));
+    // Edit selection is serialized independently and never read by the DSP.
+    layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID{"editBank",1},
+        "M/S Edit Bank",juce::StringArray{"M","S"},0));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"outputTrim",1},
+        "Output Trim",Range{-24,12,0.1f},0,juce::AudioParameterFloatAttributes{}.withLabel("dB")));
+    layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID{"bypass",1},"Bypass",false));
     return layout;
 }
-
-void HarmoHitAudioProcessor::prepareToPlay(double sampleRate, int maximumBlockSize)
-{
-    currentSampleRate = std::max(1.0, sampleRate);
-    inputVuMeanSquare = outputVuMeanSquare = 0.0f;
-    inputVuDbfs.store(-72.0f, std::memory_order_relaxed);
-    outputVuDbfs.store(-72.0f, std::memory_order_relaxed);
-    core.prepare(sampleRate, maximumBlockSize, getTotalNumOutputChannels());
-    setLatencySamples(core.getLatencySamples());
+void HarmoHitAudioProcessor::prepareToPlay(double rate, int block) {
+    if (!std::isfinite(rate) || rate <= 0.0) rate = 48000.0;
+    currentSampleRate = rate;
+    inputVuMeanSquare = outputVuMeanSquare = 0;
+    inputVuDbfs.store(-72); outputVuDbfs.store(-72);
+    core.prepare(rate, block, currentSettings()); setLatencySamples(core.getLatencySamples());
 }
 void HarmoHitAudioProcessor::releaseResources() { core.reset(); }
-bool HarmoHitAudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const
-{
-    const auto input = layouts.getMainInputChannelSet();
-    const auto output = layouts.getMainOutputChannelSet();
+bool HarmoHitAudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const {
+    const auto input = layouts.getMainInputChannelSet(), output = layouts.getMainOutputChannelSet();
     return input == output && (input == juce::AudioChannelSet::mono() || input == juce::AudioChannelSet::stereo());
 }
-void HarmoHitAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
-{
+void HarmoHitAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) {
     juce::ScopedNoDenormals noDenormals;
-    updateVuMeter(buffer, true);
-    std::array<float*, 2> channels {};
-    const int active = std::min(2, buffer.getNumChannels());
-    for (int channel = 0; channel < active; ++channel) channels[static_cast<size_t>(channel)] = buffer.getWritePointer(channel);
-    const auto mode = pushAll->load() >= 0.5f ? 2 : std::clamp(static_cast<int>(exciterRange->load()), 0, 1);
-    const auto settings = bypass->load() >= 0.5f ? vitaplug::harmohit::dsp::HarmoSettings {}
-        : vitaplug::harmohit::dsp::HarmoSettings { harmonics->load() / 100.0f, exciter->load() / 100.0f,
-            drive->load() / 100.0f, outputTrim->load(), static_cast<vitaplug::harmohit::dsp::ExciterMode>(mode) };
-    core.process(channels.data(), active, buffer.getNumSamples(), settings);
-    updateVuMeter(buffer, false);
-    vuUpdateCounter.fetch_add(1, std::memory_order_relaxed);
+    updateVuMeter(buffer,true);
+    const auto settings = currentSettings();
+    std::array<float*,2> channels{};
+    const int count = std::min(2,buffer.getNumChannels());
+    for (int i=0;i<count;++i) channels[static_cast<size_t>(i)]=buffer.getWritePointer(i);
+    core.process(channels.data(),count,buffer.getNumSamples(),settings);
+    updateVuMeter(buffer,false); vuUpdateCounter.fetch_add(1,std::memory_order_relaxed);
 }
-void HarmoHitAudioProcessor::processBlockBypassed(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
-{
-    // Keep bypass in the same oversampling/delay pipeline as active processing.
-    // Hosts that latency-compensate from getLatencySamples() and hosts that
-    // switch this callback directly both retain temporal coherence.
-    updateVuMeter(buffer, true);
-    std::array<float*, 2> channels {};
-    const int active = std::min(2, buffer.getNumChannels());
-    for (int channel = 0; channel < active; ++channel) channels[static_cast<size_t>(channel)] = buffer.getWritePointer(channel);
-    core.process(channels.data(), active, buffer.getNumSamples(), {});
-    updateVuMeter(buffer, false);
-    vuUpdateCounter.fetch_add(1, std::memory_order_relaxed);
+vitaplug::harmohit::masterdsp::MasterSettings HarmoHitAudioProcessor::currentSettings() const noexcept {
+    vitaplug::harmohit::masterdsp::MasterSettings settings;
+    for (size_t i = 0; i < banks.size(); ++i) {
+        const auto& b = banks[i];
+        settings.banks[i] = {b.harmonics->load()/100.0f,b.exciter->load()/100.0f,b.drive->load()/100.0f,
+            0.0f, static_cast<vitaplug::harmohit::masterdsp::ExciterMode>(
+                b.push->load() >= 0.5f ? 2 : (b.range->load() >= 0.5f ? 1 : 0))};
+    }
+    settings.midSide = processingMode->load() >= 0.5f;
+    settings.trimDb = outputTrim->load(); settings.bypass = bypass->load() >= 0.5f;
+    return settings;
 }
-
+void HarmoHitAudioProcessor::processBlockBypassed(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) {
+    juce::ScopedNoDenormals noDenormals;
+    updateVuMeter(buffer,true);
+    std::array<float*,2> channels{};
+    const int count = std::min(2,buffer.getNumChannels());
+    for (int i=0;i<count;++i) channels[static_cast<size_t>(i)] = buffer.getWritePointer(i);
+    core.process(channels.data(),count,buffer.getNumSamples(),{});
+    updateVuMeter(buffer,false); vuUpdateCounter.fetch_add(1,std::memory_order_relaxed);
+}
 void HarmoHitAudioProcessor::updateVuMeter(const juce::AudioBuffer<float>& buffer, bool isInput) noexcept
 {
     const int channels = std::min(2, buffer.getNumChannels());
@@ -143,31 +114,11 @@ void HarmoHitAudioProcessor::updateVuMeter(const juce::AudioBuffer<float>& buffe
     const auto dbfs = 10.0f * std::log10(std::max(integratedSquare, 1.0e-12f));
     (isInput ? inputVuDbfs : outputVuDbfs).store(juce::jlimit(-72.0f, 24.0f, dbfs), std::memory_order_relaxed);
 }
-void HarmoHitAudioProcessor::getStateInformation(juce::MemoryBlock& destination)
-{
-    if (auto xml = parameters.copyState().createXml()) copyXmlToBinary(*xml, destination);
+void HarmoHitAudioProcessor::getStateInformation(juce::MemoryBlock& data) {
+    if (auto xml=parameters.copyState().createXml()) copyXmlToBinary(*xml,data);
 }
-void HarmoHitAudioProcessor::setStateInformation(const void* data, int size)
-{
-    if (auto xml = getXmlFromBinary(data, size))
-        if (xml->hasTagName(parameters.state.getType()))
-        {
-            const auto restoredState = juce::ValueTree::fromXml(*xml);
-            const auto hasExciterRange = containsParameterId(restoredState, "exciterRange");
-            const auto hasPushAll = containsParameterId(restoredState, "pushAll");
-            parameters.replaceState(restoredState);
-            // Sessions from the vintage editor may contain only the three-state
-            // parameter, or that parameter plus a remembered range. Migrate on
-            // state restore, never from the audio thread.
-            const auto legacyMode = std::clamp(static_cast<int>(exciterMode->load()), 0, 2);
-            if (!hasExciterRange)
-            {
-                if (auto* range = parameters.getParameter("exciterRange"))
-                    range->setValueNotifyingHost(legacyMode == 1 ? 1.0f : 0.0f);
-            }
-            if (!hasPushAll)
-                if (auto* push = parameters.getParameter("pushAll"))
-                    push->setValueNotifyingHost(legacyMode == 2 ? 1.0f : 0.0f);
-        }
+void HarmoHitAudioProcessor::setStateInformation(const void* data,int size) {
+    if (auto xml=getXmlFromBinary(data,size))
+        if (xml->hasTagName(parameters.state.getType())) parameters.replaceState(juce::ValueTree::fromXml(*xml));
 }
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() { return new HarmoHitAudioProcessor(); }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>
-#include "DSP/HarmoCore.h"
+#include "DSP/MasterEngine.h"
 
 class HarmoHitAudioProcessor final : public juce::AudioProcessor
 {
@@ -33,10 +33,15 @@ public:
     std::atomic<float>& getInputVuSource() noexcept { return inputVuDbfs; }
     std::atomic<float>& getOutputVuSource() noexcept { return outputVuDbfs; }
     std::atomic<uint64_t>& getVuUpdateCounter() noexcept { return vuUpdateCounter; }
+    const vitaplug::harmohit::masterdsp::MasterEngine& getEngine() const noexcept { return core; }   // tests only
 private:
-    vitaplug::harmohit::dsp::HarmoCore core;
-    std::atomic<float> *harmonics = nullptr, *exciter = nullptr, *drive = nullptr, *exciterMode = nullptr,
-                       *exciterRange = nullptr, *pushAll = nullptr, *outputTrim = nullptr, *bypass = nullptr;
+    vitaplug::harmohit::masterdsp::MasterSettings currentSettings() const noexcept;
+    vitaplug::harmohit::masterdsp::MasterEngine core;
+    struct BankPointers {
+        std::atomic<float> *harmonics{}, *exciter{}, *drive{}, *range{}, *push{};
+    };
+    std::array<BankPointers, 3> banks{};
+    std::atomic<float> *outputTrim{}, *bypass{}, *processingMode{};
     std::atomic<float> inputVuDbfs { -72.0f };
     std::atomic<float> outputVuDbfs { -72.0f };
     std::atomic<uint64_t> vuUpdateCounter { 0 };
