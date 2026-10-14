@@ -66,8 +66,9 @@ int main(int argc, char** argv) {
         std::unique_ptr<juce::AudioProcessorEditor> editor(a->createEditorAndMakeActive());
         check(editor && editor->getWidth() == 760 && editor->getHeight() == 380, "actual VST3 editor 760x380");
         juce::DocumentWindow window("MASTER R2 VST3 validation", juce::Colours::black, 0);
-        window.setUsingNativeTitleBar(true); window.setContentNonOwned(editor.get(), true); window.centreWithSize(760, 380); window.setVisible(true);
-        juce::MessageManager::getInstance()->runDispatchLoopUntil(800);
+        window.setUsingNativeTitleBar(true); window.setContentNonOwned(editor.get(), true); window.centreWithSize(760, 380); window.setVisible(true); window.toFront(false);
+        juce::MessageManager::getInstance()->runDispatchLoopUntil(1600);
+        std::cout << "PASS VST3 identity/state/audio/mode/automation/trim/editor construction; parameters=" << a->getParameters().size() << " edit_error=" << maximumEditDifference << '\n';
 #if JUCE_WINDOWS
         if (argc >= 3) {
             const auto hwnd = static_cast<HWND>(window.getWindowHandle()); RECT rect{}; check(::GetClientRect(hwnd, &rect) != 0, "window client rect");
@@ -77,13 +78,26 @@ int main(int argc, char** argv) {
             info.bmiHeader.biPlanes = 1; info.bmiHeader.biBitCount = 32; info.bmiHeader.biCompression = BI_RGB; void* pixels{};
             auto bitmap = ::CreateDIBSection(dc, &info, DIB_RGB_COLORS, &pixels, nullptr, 0); check(bitmap && pixels, "capture bitmap");
             auto previous = ::SelectObject(memory, bitmap); check(::BitBlt(memory, 0, 0, width, height, dc, 0, 0, SRCCOPY | CAPTUREBLT) != 0, "capture native VST3 editor");
-            juce::Image snapshot(juce::Image::RGB, width, height, true); auto* bytes = static_cast<unsigned char*>(pixels); int green = 0;
-            for (int j = 0; j < height; ++j) for (int i = 0; i < width; ++i) {
-                const int k = (j * width + i) * 4; const juce::Colour colour(bytes[k + 2], bytes[k + 1], bytes[k]); snapshot.setPixelAt(i, j, colour);
-                if (bytes[k + 1] > bytes[k + 2] * 1.3 && bytes[k + 1] > bytes[k] * 1.1 && bytes[k + 1] > 10) ++green;
+            juce::Image snapshot; int green = 0;
+            auto readBitmap = [&] {
+                snapshot = juce::Image(juce::Image::RGB, width, height, true); auto* bytes = static_cast<unsigned char*>(pixels); green = 0;
+                for (int j = 0; j < height; ++j) for (int i = 0; i < width; ++i) {
+                    const int k = (j * width + i) * 4; snapshot.setPixelAt(i, j, juce::Colour(bytes[k + 2], bytes[k + 1], bytes[k]));
+                    if (bytes[k + 1] > bytes[k + 2] * 1.3 && bytes[k + 1] > bytes[k] * 1.1 && bytes[k + 1] > 10) ++green;
+                }
+            };
+            auto save = [&](const juce::File& file) { auto stream = file.createOutputStream(); check(stream != nullptr, "UI capture output"); juce::PNGImageFormat png; check(png.writeImageToStream(snapshot, *stream), "save real Windows UI capture"); };
+            readBitmap(); std::cout << "BitBlt green_pixels=" << green << '\n';
+            save(juce::File(juce::String(argv[2])).getSiblingFile("validation-ui-bitblt.png"));
+            if (green <= width * height / 100) {
+                // DWM/Direct2D content need not be present in a window's GDI DC.
+                // Ask Windows to render the real client/children, not a mockup.
+                const bool printed = ::PrintWindow(hwnd, memory, 3 /* PW_CLIENTONLY | PW_RENDERFULLCONTENT */) != 0;
+                std::cout << "PrintWindow success=" << printed << '\n'; readBitmap();
+                std::cout << "PrintWindow green_pixels=" << green << '\n';
             }
+            save(juce::File(juce::String(argv[2])));
             ::SelectObject(memory, previous); ::DeleteObject(bitmap); ::DeleteDC(memory); ::ReleaseDC(hwnd, dc);
-            auto stream = juce::File(juce::String(argv[2])).createOutputStream(); check(stream != nullptr, "UI capture output"); juce::PNGImageFormat png; check(png.writeImageToStream(snapshot, *stream), "save real Windows UI capture");
             check(green > width * height / 100, "embedded green panel is visible, not missing/black");
             std::cout << "Windows native editor capture " << width << 'x' << height << " green_pixels=" << green << '\n';
         }

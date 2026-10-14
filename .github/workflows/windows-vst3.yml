@@ -70,5 +70,6 @@ jobs:
           path: |
             validation/
             build/windows-x64/Testing/Temporary/
+            build/windows-x64/validation-ui*.png
           if-no-files-found: warn
           retention-days: 30
