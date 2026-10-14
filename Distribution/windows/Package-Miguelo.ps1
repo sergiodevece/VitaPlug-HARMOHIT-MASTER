@@ -14,6 +14,7 @@ $info = Get-Content (Join-Path $bundle 'Contents/Resources/moduleinfo.json') -Ra
 if ($info.Name -ne 'VitaPlug HARMOHIT MASTER' -or $info.Version -ne '0.2.0') { throw 'Unexpected VST3 product/version' }
 $coreHash = (Get-FileHash (Join-Path $Workspace 'Source/DSP/Drive670Core.h')).Hash.ToLowerInvariant()
 $postHash = (Get-FileHash (Join-Path $Workspace 'Source/DSP/Drive670PostGain.h')).Hash.ToLowerInvariant()
+Write-Output "Checked-out core SHA256=$coreHash; post-gain SHA256=$postHash"
 if ($coreHash -ne '556d2b923570b2e05f18374cae1c0a0e7af6b41eb7d9b269b6babb97bc1b8f7e' -or $postHash -ne '27f3ad4f99a220d47dcb5bdcd0aa581038138285dbb36e8942207b5f3bb0f8a3') { throw 'Approved 670 core hash mismatch' }
 $asset = Join-Path $Workspace 'Resources/HARMOHIT/HarmoHitMasterApproved.png'
 if ((Get-FileHash $asset).Hash.ToLowerInvariant() -ne '5ff9e764c6fd10db521e5747e60d1eca0d536e494399effd23d820614eece85d') { throw 'Approved panel changed' }
