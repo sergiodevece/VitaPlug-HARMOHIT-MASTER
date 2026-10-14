@@ -155,9 +155,9 @@ Los binarios están firmados **ad hoc**: no tienen firma Developer ID ni notariz
 ## 15. Créditos, licencias y marcas
 
 - **Diseño, dirección musical y aprobación:** SerxDev — VitaPlug / Vitalab.
-- **JUCE 9.0.3** (Raw Material Software): licencia dual AGPLv3 / licencia comercial JUCE 9. No se incluye en el repositorio.
-- **VST3 SDK** (Steinberg Media Technologies GmbH, incluido en JUCE): licencia MIT. La nota completa está en [Documentation/THIRD_PARTY_AND_PUBLICATION.md](Documentation/THIRD_PARTY_AND_PUBLICATION.md).
-- **Código e imágenes de HARMOHIT:** el repositorio es público para estudio y presentación. **No incluye licencia** por decisión explícita del propietario; la visibilidad pública no concede derechos de reutilización ni redistribución.
+- **Código e imágenes de HARMOHIT MASTER:** © 2026 Sergio Devece Carañana (SerxDev). El repositorio es público para estudio y presentación. **No incluye licencia** por decisión explícita del propietario: la visibilidad pública no concede derechos de reutilización ni redistribución, y el código **no** está bajo AGPLv3.
+- **JUCE 9.0.3** (Raw Material Software): los binarios publicados usan JUCE bajo la **licencia comercial JUCE 9 Starter** (gratuita, desarrollador individual sin ingresos por software JUCE), no bajo AGPLv3. JUCE no se incluye en el repositorio. Quien compile el código necesita su propia licencia de JUCE.
+- **Componentes de terceros** compilados en los binarios: VST3 SDK (MIT), AudioUnitSDK (Apache-2.0), zlib, libpng, libwebp, FLAC, Ogg/Vorbis, Opus, HarfBuzz, SheenBidi, LunaSVG y PlutoVG, cada uno con su licencia. Avisos completos en [Documentation/THIRD_PARTY_NOTICES.txt](Documentation/THIRD_PARTY_NOTICES.txt) y detalle en [Documentation/THIRD_PARTY_AND_PUBLICATION.md](Documentation/THIRD_PARTY_AND_PUBLICATION.md).
 - **Marcas:** "Fairchild" y "Fairchild 670" son marcas de sus respectivos titulares. Se citan solo como referencia técnica. VitaPlug HARMOHIT MASTER es un producto independiente, sin afiliación, patrocinio ni respaldo. AU y VST son marcas de Apple y Steinberg respectivamente.
 
 ## 16. Historial de versiones

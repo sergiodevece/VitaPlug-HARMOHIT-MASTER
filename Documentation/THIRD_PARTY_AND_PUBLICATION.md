@@ -29,9 +29,47 @@ The commit history currently contains the literal placeholder author address `TU
 
 The decision above applies unchanged to HARMOHIT MASTER. There is no `LICENSE` file: the repository is public for study and presentation, and public visibility does not grant reuse, modification or redistribution rights. The MASTER panel artwork (`Resources/HARMOHIT/HarmoHitMasterApproved.png`) and the screenshots are project assets under the same terms. No font files are distributed: panel lettering is part of the artwork.
 
-### JUCE 9.0.3
+### JUCE 9.0.3 — licence basis for the binaries
 
-The JUCE Framework modules are dual-licensed: **AGPLv3** or the commercial **JUCE 9 End User Licence Agreement** (<https://juce.com/legal/juce-9-licence/>). JUCE is not included in this repository. Compiled plug-ins contain JUCE code, so **distributing binaries** requires a valid basis: either AGPLv3, which would require releasing the corresponding source under AGPLv3 (incompatible with the no-licence decision above), or the JUCE 9 EULA in a tier that applies to the owner (Starter, Indie, Pro…, with the conditions published by JUCE). Choosing that basis is the owner's decision. This document does not provide legal advice.
+The JUCE Framework modules are dual-licensed: **AGPLv3** or the commercial **JUCE 9 End User Licence Agreement** (<https://juce.com/legal/juce-9-licence/>).
+
+**Decision of the owner (2026-10-14).** VitaPlug HARMOHIT MASTER binaries are distributed under the commercial **JUCE 9 Starter** licence, the free tier, by an individual developer who is the Owner of the Product. The owner confirmed that they currently obtain **no revenue or funding** from software developed with JUCE; the Starter limit is 20,000 USD over the previous 12 months (EULA §1.2.1). The project is **not** relicensed under AGPLv3, and the AGPLv3 option of JUCE is not used.
+
+| Item | Licence |
+|---|---|
+| HARMOHIT MASTER own source code and artwork | No licence: all rights reserved, public for study and presentation |
+| JUCE modules compiled into the binaries | JUCE 9 EULA, Starter tier (commercial, free) |
+| Third-party components inside JUCE that are compiled into the binaries | Their own licences (MIT, BSD-3-Clause, Apache-2.0, Zlib, libpng-2.0), with notices in `Documentation/THIRD_PARTY_NOTICES.txt` and in the release package |
+
+Starter conditions reviewed against the EULA text:
+- Revenue or funding ≤ 20,000 USD over 12 months (§1.2.1). If it is exceeded, an Indie or Pro licence is required (§1.14).
+- Starter may not be mixed with other licence types (§1.13).
+- The Framework is not distributed on its own (§1.17): this repository does not include JUCE.
+- The product does not create other products (§1.12).
+- Nothing may cause the Framework to become subject to an open-source licence requiring disclosure (§2.3): the project grants no open-source licence.
+- JUCE notices are not removed or altered (§2.9).
+- Usage records must be kept and provided if RMS requests them (§10.3).
+- The EULA requires no splash screen or attribution. RMS may cite the licensee's name, with an opt-out (§10.2).
+
+This is a documented owner decision, not legal advice. Anyone building this source code needs their own JUCE licence.
+
+### Third-party components compiled into the binaries
+
+Verified by inspecting the symbols of the v0.2.0 binaries:
+
+| Component | Licence | Binaries |
+|---|---|---|
+| VST3 SDK 3.8.0 | MIT | VST3 |
+| AudioUnitSDK 1.1.0 | Apache-2.0 | AU |
+| zlib 1.3.2 | Zlib | AU, VST3 |
+| libpng 1.6.58 | libpng-2.0 | AU, VST3 |
+| libwebp 1.6.0 | BSD-3-Clause | AU, VST3 |
+| FLAC 1.5.0, libogg 1.3.6, libvorbis 1.3.7, Opus 1.6.1 | BSD-3-Clause | AU, VST3 |
+| HarfBuzz 14.2.1 | MIT (Modern Variant) | AU, VST3 |
+| SheenBidi 2.9.0 | Apache-2.0 | AU, VST3 |
+| LunaSVG 3.5.0, PlutoVG 1.3.2 | MIT | AU, VST3 |
+
+The full notices are in `Documentation/THIRD_PARTY_NOTICES.txt`, which is also shipped in the release ZIP.
 
 ### VST3 SDK (bundled with JUCE)
 
@@ -78,4 +116,4 @@ The DRIVE 670 equivalence suite (`HarmoHitDrive670IntegrationTests`) is only bui
 - Scanned the files to be published for credential, private-key and token patterns: none found.
 - Scanned for e-mail addresses: none found in project files.
 - Replaced local absolute paths in the new reports with repository-relative or `<VITAPLUG>/…` references. One inherited MIX report keeps a historical path that is already public in the MIX history.
-- The history still contains the literal placeholder author address noted above. New commits use the same configured identity.
+- The history up to v0.2.0 (commit ab739e8) contains the literal placeholder author address noted above. It is not rewritten, to avoid force-pushing published history. The owner has since configured a real Git identity, which later commits use.
