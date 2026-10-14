@@ -1,80 +1,74 @@
-name: HARMOHIT MIX — Windows VST3 x64
-
+name: HARMOHIT MASTER R2 — Windows x64 distribution
 on:
   workflow_dispatch:
-
+  push:
+    branches: [distribution/windows-vst3-r2]
 permissions:
   contents: read
-
+concurrency:
+  group: master-r2-windows-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
-  build-windows-vst3:
-    # Inherited MIX workflow retained as history only; MASTER has no remote/CI release.
-    if: ${{ false }}
-    name: Build and test HARMOHIT MIX Windows x64 VST3
-    # Keep the same proven runner as VitaPlug Gainer80.
+  windows-r2:
+    if: github.ref == 'refs/heads/distribution/windows-vst3-r2'
     runs-on: windows-2022
-
+    timeout-minutes: 45
     steps:
-      - name: Check out VitaPlug HARMOHIT
-        uses: actions/checkout@v4
-
-      - name: Fetch pinned JUCE 9.0.3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Confirm frozen R2 product and pinned JUCE
         shell: pwsh
         run: |
-          $expected = 'be29c81492b6151c8ea8d14c840e1311963b3a83'
+          git diff --exit-code f2e88eef2a28bcca1d547ad207af8f9da33f418b HEAD -- Source Resources
+          if ($LASTEXITCODE -ne 0) { throw 'Frozen product changed' }
           git clone --depth 1 --branch 9.0.3 https://github.com/juce-framework/JUCE.git external/JUCE
-          $actual = (git -C external/JUCE rev-parse HEAD).Trim()
-          if ($actual -ne $expected) {
-            throw "JUCE revision mismatch. Expected $expected, got $actual"
-          }
-
-      - name: Configure Release x64
-        shell: pwsh
-        run: >
-          cmake -S . -B build/windows-x64 -G "Visual Studio 17 2022" -A x64
-          -DCMAKE_BUILD_TYPE=Release
-          -DJUCE_DIR="${{ github.workspace }}/external/JUCE"
-
-      - name: Build MIX VST3 and DSP tests
-        shell: pwsh
-        run: >
-          cmake --build build/windows-x64 --config Release
-          --target VitaPlugHarmoHitMix_VST3 VitaPlugHarmoHitDSPTests
-
-      - name: Run CTest
-        shell: pwsh
-        run: ctest --test-dir build/windows-x64 -C Release --output-on-failure
-
-      - name: Validate and package MIX VST3 bundle
+          if ($LASTEXITCODE -ne 0) { throw 'JUCE checkout failed' }
+          if ((git -C external/JUCE rev-parse HEAD).Trim() -ne 'be29c81492b6151c8ea8d14c840e1311963b3a83') { throw 'JUCE pin mismatch' }
+          New-Item -ItemType Directory -Path validation -Force | Out-Null
+      - name: Configure genuine VS2022 Release x64, public suites only
         shell: pwsh
         run: |
-          $bundle = Get-ChildItem -Path build/windows-x64 -Directory -Filter 'VitaPlug HARMOHIT MIX.vst3' -Recurse |
-            Select-Object -First 1
-          if ($null -eq $bundle) {
-            throw 'No VitaPlug HARMOHIT MIX VST3 bundle was produced.'
+          cmake -S . -B build/windows-x64 -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release -DJUCE_DIR="${{ github.workspace }}/external/JUCE" -DDRIVE670_LAB_DIR="${{ github.workspace }}/private-reference-not-supplied" 2>&1 | Tee-Object validation/configure.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Configure failed' }
+          'Public suites: HarmoHitMasterTests, HarmoHitDriveTests, HarmoHitPublic670Tests, HarmoHitVST3Smoke. Private suites NOT run: HarmoHitDrive670IntegrationTests, Drive670CoreIsVerbatim, Drive670PostGainIsVerbatim (LAB/WAV private, remain available locally).' | Set-Content validation/test-scope.txt
+      - name: Build unchanged MASTER VST3 and public validation targets
+        shell: pwsh
+        run: |
+          cmake --build build/windows-x64 --config Release --parallel 2 --target VitaPlugHarmoHitMasterR1_VST3 HarmoHitMasterTests HarmoHitDriveTests HarmoHitPublic670Tests HarmoHitVST3Smoke 2>&1 | Tee-Object validation/build.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Build failed; no product-source workaround is authorised' }
+      - name: CTest including actual VST3 Windows host smoke
+        shell: pwsh
+        run: |
+          ctest --test-dir build/windows-x64 -C Release --output-on-failure -V 2>&1 | Tee-Object validation/ctest.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Public CTest failed' }
+          Copy-Item build/windows-x64/validation-ui.png validation/Windows-VST3-editor.png
+          $validator = Get-Command validator.exe -ErrorAction SilentlyContinue
+          if ($validator) {
+            & $validator.Source 'build/windows-x64/VitaPlugHarmoHitMasterR1_artefacts/Release/VST3/VitaPlug HARMOHIT MASTER.vst3' 2>&1 | Tee-Object validation/steinberg-validator.txt
+            if ($LASTEXITCODE -ne 0) { throw 'Installed VST3 validator failed' }
+          } else {
+            'Steinberg validator not installed on this runner; JUCE bundled SDK has no validator executable/sample. Actual JUCE VST3 host smoke passed, not an official validator certification.' | Set-Content validation/steinberg-validator.txt
           }
-
-          $archDirectory = Join-Path $bundle.FullName 'Contents/x86_64-win'
-          if (-not (Test-Path -LiteralPath $archDirectory -PathType Container)) {
-            throw "Missing expected VST3 x64 directory: $archDirectory"
-          }
-          $pluginBinary = Get-ChildItem -Path $archDirectory -File -Filter '*.vst3' |
-            Select-Object -First 1
-          if ($null -eq $pluginBinary) {
-            throw 'No x64 VST3 binary was found inside the bundle.'
-          }
-
-          $stage = Join-Path $env:RUNNER_TEMP 'VitaPlug-HARMOHIT-MIX-v0.1.0-windows-x64'
-          $archive = Join-Path $env:RUNNER_TEMP 'VitaPlug-HARMOHIT-MIX-v0.1.0-windows-x64-vst3.zip'
-          New-Item -ItemType Directory -Path $stage -Force | Out-Null
-          Copy-Item -LiteralPath $bundle.FullName -Destination (Join-Path $stage $bundle.Name) -Recurse
-          Compress-Archive -Path (Join-Path $stage $bundle.Name) -DestinationPath $archive -Force
-          "VST3_ARCHIVE=$archive" | Out-File -FilePath $env:GITHUB_ENV -Append
-
-      - name: Upload Windows VST3 x64 ZIP
+      - name: Inspect PE x64, embedded graphics and package for Miguelo
+        shell: pwsh
+        run: ./Distribution/windows/Package-Miguelo.ps1 -Workspace $env:GITHUB_WORKSPACE -Revision $env:GITHUB_SHA
+      - name: Upload collaborator ZIP (not a Release)
         uses: actions/upload-artifact@v4
         with:
-          name: VitaPlug-HARMOHIT-MIX-v0.1.0-windows-x64-vst3
-          path: ${{ env.VST3_ARCHIVE }}
+          name: HARMOHIT-MASTER-R2-Windows-x64-Miguelo
+          path: |
+            ${{ env.MIGUELO_ZIP }}
+            ${{ env.MIGUELO_ZIP_SHA }}
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 30
+      - name: Preserve diagnostic evidence, including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HARMOHIT-MASTER-R2-Windows-validation
+          path: |
+            validation/
+            build/windows-x64/Testing/Temporary/
+          if-no-files-found: warn
+          retention-days: 30

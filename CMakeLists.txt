@@ -7,6 +7,7 @@ set(JUCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../vitaplug_gainer_80/external/JUCE" C
 if(NOT EXISTS "${JUCE_DIR}/CMakeLists.txt")
     message(FATAL_ERROR "Set JUCE_DIR to pinned JUCE 9.0.3 sources.")
 endif()
+
 add_subdirectory("${JUCE_DIR}" JUCE)
 juce_add_binary_data(HarmoHitMasterAssets SOURCES Resources/HARMOHIT/HarmoHitMasterApproved.png)
 if(WIN32)
@@ -63,3 +64,17 @@ if(EXISTS "${DRIVE670_LAB_DIR}/Source/DSP/Drive670Engine.h")
 else()
     message(WARNING "DRIVE670_LAB_DIR not found: LAB/MASTER equivalence tests are not built")
 endif()
+
+# Distribution-only checks: synthetic inputs, no LAB or private recordings.
+add_executable(HarmoHitPublic670Tests Tests/Public670Tests.cpp)
+target_include_directories(HarmoHitPublic670Tests PRIVATE Source)
+target_compile_definitions(HarmoHitPublic670Tests PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
+target_link_libraries(HarmoHitPublic670Tests PRIVATE juce::juce_dsp juce::juce_recommended_config_flags)
+add_test(NAME HarmoHitPublic670Tests COMMAND HarmoHitPublic670Tests)
+
+add_executable(HarmoHitVST3Smoke Tests/VST3Smoke.cpp)
+target_compile_definitions(HarmoHitVST3Smoke PRIVATE JUCE_PLUGINHOST_VST3=1 JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_MODAL_LOOPS_PERMITTED=1)
+target_link_libraries(HarmoHitVST3Smoke PRIVATE juce::juce_audio_processors juce::juce_recommended_config_flags)
+add_test(NAME HarmoHitVST3Smoke COMMAND HarmoHitVST3Smoke
+    "${CMAKE_BINARY_DIR}/VitaPlugHarmoHitMasterR1_artefacts/$<CONFIG>/VST3/VitaPlug HARMOHIT MASTER.vst3"
+    "${CMAKE_BINARY_DIR}/validation-ui.png")
