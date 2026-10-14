@@ -49,3 +49,17 @@ add_executable(HarmoHitCoexistenceTests Tests/Coexistence.cpp)
 master_common(HarmoHitCoexistenceTests)
 target_compile_definitions(HarmoHitCoexistenceTests PRIVATE JUCE_PLUGINHOST_VST3=1)
 
+# DRIVE 670 R0.2 integration tests. The LAB project (read only) provides the approved
+# reference engine; its core header must stay byte-identical to MASTER's copy.
+set(DRIVE670_LAB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../drive670-lab" CACHE PATH "DRIVE 670 LAB R0.2 project (reference, read only)")
+if(EXISTS "${DRIVE670_LAB_DIR}/Source/DSP/Drive670Engine.h")
+    add_executable(HarmoHitDrive670IntegrationTests Tests/Drive670IntegrationTests.cpp Tests/LabReference.cpp)
+    master_common(HarmoHitDrive670IntegrationTests)
+    set_source_files_properties(Tests/LabReference.cpp PROPERTIES INCLUDE_DIRECTORIES "${DRIVE670_LAB_DIR}/Source/DSP")
+    target_compile_definitions(HarmoHitDrive670IntegrationTests PRIVATE HARMOHIT_PROJECT_DIR="${CMAKE_CURRENT_SOURCE_DIR}" DRIVE670_LAB_DIR="${DRIVE670_LAB_DIR}")
+    add_test(NAME HarmoHitDrive670IntegrationTests COMMAND HarmoHitDrive670IntegrationTests)
+    add_test(NAME Drive670CoreIsVerbatim COMMAND ${CMAKE_COMMAND} -E compare_files "${DRIVE670_LAB_DIR}/Source/DSP/Drive670Core.h" "${CMAKE_CURRENT_SOURCE_DIR}/Source/DSP/Drive670Core.h")
+    add_test(NAME Drive670PostGainIsVerbatim COMMAND ${CMAKE_COMMAND} -E compare_files "${DRIVE670_LAB_DIR}/Source/DSP/Drive670PostGain.h" "${CMAKE_CURRENT_SOURCE_DIR}/Source/DSP/Drive670PostGain.h")
+else()
+    message(WARNING "DRIVE670_LAB_DIR not found: LAB/MASTER equivalence tests are not built")
+endif()
