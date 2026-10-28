@@ -173,3 +173,7 @@ Los binarios están firmados **ad hoc**: no tienen firma Developer ID ni notariz
 Notas completas en [CHANGELOG.md](CHANGELOG.md).
 
 **Cambio de sonido entre R1.2 y R2:** el parámetro DRIVE conserva su identificador y su rango, pero su motor y su significado son nuevos. Una sesión antigua con DRIVE a 70 aplica ahora +7 dB de POST GAIN además de compresión. Prueba primero sobre copias de tus sesiones y no sobrescribas presets antiguos.
+
+---
+
+**Autor:** Sergio Devece · SerxDev — [Portfolio](https://serxdev.org)
