@@ -1,0 +1,38 @@
+name: Studio transfer HARMOHIT MASTER v0.2.0 AU
+on:
+  push:
+    branches:
+      - studio-macos-au-arm64-20261107
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pack-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch existing published macOS arm64 Release assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          gh release download v0.2.0 -R "$GITHUB_REPOSITORY" -p 'VitaPlug-HARMOHIT-MASTER-v0.2.0-macOS-arm64.zip' -p 'SHA256SUMS.txt' -D dist
+          ls -lh dist
+      - name: Validate Release archive and SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dist
+          sum="$(grep 'VitaPlug-HARMOHIT-MASTER-v0.2.0-macOS-arm64.zip' SHA256SUMS.txt | awk '{print $1}' | head -1)"
+          test -n "$sum"
+          echo "$sum  VitaPlug-HARMOHIT-MASTER-v0.2.0-macOS-arm64.zip" | sha256sum --check -
+          unzip -t VitaPlug-HARMOHIT-MASTER-v0.2.0-macOS-arm64.zip
+      - name: Upload original published Release ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: HARMOHIT-MASTER-v0.2.0-macOS-arm64
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
